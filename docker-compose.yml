@@ -22,4 +22,4 @@ services:
             - PMA_USER=root
             - PMA_PASSWORD=root
         ports:
-            - "8000:80"
+            - "8080:80"

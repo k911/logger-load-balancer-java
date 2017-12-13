@@ -15,6 +15,10 @@ public class MysqlDatabaseManager {
         this.database = database;
     }
 
+    public PreparedStatement prepareStatement(String sql) {
+        return statementFactory.prepare(sql);
+    }
+
     public ResultSet executeQuery(String sql) {
         Statement statement = this.statementFactory.make();
 

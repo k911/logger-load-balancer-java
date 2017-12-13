@@ -8,15 +8,26 @@ public class MysqlConnectionFactory implements ConnectionFactory {
 
     private static final String driver = "com.mysql.jdbc.Driver";
 
+    private String uri;
+    private String username;
+    private String password;
+
+    public MysqlConnectionFactory(String uri, String username, String password) {
+
+        this.uri = uri;
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
-    public Connection make(String uri, String username, String password) {
+    public Connection make() {
 
         if (!driverExists(driver)) {
             throw new RuntimeException("MySQL JDBC Driver is required to create connection.");
         }
 
         try {
-            return DriverManager.getConnection(uri, username, password);
+            return DriverManager.getConnection(this.uri, this.username, this.password);
         } catch (SQLException e) {
             System.out.println("Unable to create connection: " + e.getLocalizedMessage());
             System.exit(1);
