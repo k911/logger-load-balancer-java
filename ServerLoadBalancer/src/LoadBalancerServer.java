@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import database.MysqlConnectionFactory;
 import database.MysqlDatabaseManager;
 import database.SimpleStatementFactory;
+import dotenv.Dotenv;
 import handler.DefaultHttpHandler;
 import handler.HttpExceptionHandler;
 import handler.LogsHttpHandler;
@@ -16,8 +17,12 @@ import java.sql.SQLException;
 
 public class LoadBalancerServer {
     public static void main(String[] args) {
-        String database = "database";
-        MysqlConnectionFactory connectionFactory = new MysqlConnectionFactory("jdbc:mysql://127.0.0.1?characterEncoding=utf-8&useSSL=false", "root", "root");
+        // Load environment variables
+        new Dotenv().load();
+        boolean debug = Boolean.valueOf(System.getenv("APP_DEBUG"));
+
+        String database = System.getenv("DATABASE_NAME");
+        MysqlConnectionFactory connectionFactory = new MysqlConnectionFactory(System.getenv("DATABASE_URI"), System.getenv("DATABASE_USER"), System.getenv("DATABASE_PASSWORD"));
         Connection connection = connectionFactory.make();
         SimpleStatementFactory statementFactory = new SimpleStatementFactory(connection);
         MysqlDatabaseManager databaseManager = new MysqlDatabaseManager(statementFactory, database);
@@ -27,8 +32,7 @@ public class LoadBalancerServer {
         gsonBuilder.serializeNulls();
         Gson gson = gsonBuilder.create();
 
-        boolean debug = true;
-        if(debug | !databaseManager.exists()) {
+        if (debug | !databaseManager.exists()) {
             if (databaseManager.exists()) {
                 databaseManager.drop();
                 System.out.println("Database successfully dropped.");
@@ -39,7 +43,7 @@ public class LoadBalancerServer {
             System.out.println("Schema successfully created.");
         }
 
-        // Set database for connection
+        // Set database for current connection
         try {
             connection.setCatalog(database);
         } catch (SQLException e) {
@@ -48,7 +52,10 @@ public class LoadBalancerServer {
 
         LogRepository logRepository = new LogRepository(databaseManager);
 
-        InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", 8000);
+        // Load Http Server
+        String httpServerHost = System.getenv("HTTP_SERVER_HOST");
+        int httpServerPort = Integer.parseInt(System.getenv("HTTP_SERVER_PORT"));
+        InetSocketAddress socketAddress = new InetSocketAddress(httpServerHost, httpServerPort);
 
         HttpExceptionHandler exceptionHandler = new HttpExceptionHandler(gson);
         DefaultHttpHandler defaultHandler = new DefaultHttpHandler(exceptionHandler);

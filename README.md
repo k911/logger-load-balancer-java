@@ -3,6 +3,9 @@
 Run:
 
 ```
+# Copy default enviroment variables
+cp .env.example .env
+# Run database, phpmyadmin
 docker-compose up -d
 ```
 
