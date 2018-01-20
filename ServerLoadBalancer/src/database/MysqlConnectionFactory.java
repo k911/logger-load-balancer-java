@@ -21,6 +21,7 @@ public class MysqlConnectionFactory implements ConnectionFactory {
 
     @Override
     public Connection make() {
+        System.out.println("INFO: new MySQL connection created");
 
         if (!driverExists(driver)) {
             throw new RuntimeException("MySQL JDBC Driver is required to create connection.");
@@ -31,6 +32,22 @@ public class MysqlConnectionFactory implements ConnectionFactory {
         } catch (SQLException e) {
             System.out.println("Unable to create connection: " + e.getLocalizedMessage());
             System.exit(1);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Connection make(String database) {
+        Connection connection = make();
+
+        if(null != connection) {
+            try {
+                connection.setCatalog(database);
+                return connection;
+            } catch (SQLException e) {
+                System.out.println("Unable to create connection: " + e.getLocalizedMessage() + " with database: " + database);
+            }
         }
 
         return null;

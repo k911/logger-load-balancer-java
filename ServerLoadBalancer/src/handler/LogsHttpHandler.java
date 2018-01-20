@@ -99,16 +99,8 @@ public class LogsHttpHandler implements HttpHandler {
     }
 
     private void saveLog(HttpExchange http) throws IOException, HttpException {
-
-        StringBuilder bodyBuilder = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader(http.getRequestBody(), Charset.forName(StandardCharsets.UTF_8.name())))) {
-            int c;
-            while ((c = reader.read()) != -1) {
-                bodyBuilder.append((char) c);
-            }
-        }
-
-        Log log = gson.fromJson(bodyBuilder.toString(), Log.class);
+        Reader reader = new BufferedReader(new InputStreamReader(http.getRequestBody(), Charset.forName(StandardCharsets.UTF_8.name())));
+        Log log = gson.fromJson(reader, Log.class);
 
         if (!log.hasContext() || !log.hasMessage()) {
             throw new HttpException("Attributes: `message` and `context` are required.", 400);

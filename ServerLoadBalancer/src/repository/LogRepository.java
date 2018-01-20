@@ -1,6 +1,7 @@
 package repository;
 
 import database.MysqlDatabaseManager;
+import items.HttpException;
 import items.Log;
 
 import java.sql.PreparedStatement;
@@ -8,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LogRepository {
     private MysqlDatabaseManager databaseManager;
@@ -18,7 +17,7 @@ public class LogRepository {
         this.databaseManager = databaseManager;
     }
 
-    public void add(Log log) {
+    public void add(Log log) throws HttpException {
         PreparedStatement statement = databaseManager.prepareStatement("INSERT INTO logs (message, context, created_at) VALUES (?, ?, ?)");
         try {
             statement.setString(1, log.getMessage());
@@ -27,15 +26,15 @@ public class LogRepository {
             statement.executeUpdate();
 
             ResultSet results = statement.getGeneratedKeys();
-            if(results.next()) {
+            if (results.next()) {
                 log.setId(results.getInt(1));
             }
         } catch (SQLException e) {
-            System.out.println("Error saving log into database: " + e.getLocalizedMessage());
+            throw new HttpException("Could not add log to database: " + e.getLocalizedMessage(), 500);
         }
     }
 
-    public Collection<Log> findAll(int offset, int limit) {
+    public Collection<Log> findAll(int offset, int limit) throws HttpException {
         Collection<Log> logs = new ArrayList<>();
 
         PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs LIMIT ? OFFSET ?;");
@@ -48,8 +47,7 @@ public class LogRepository {
                 logs.add(new Log(results.getInt("id"), results.getString("message"), results.getString("context"), results.getTimestamp("created_at")));
             }
         } catch (SQLException e) {
-            System.out.println("Error getting logs from database: " + e.getLocalizedMessage());
-            return logs;
+            throw new HttpException("Error getting logs from database: " + e.getLocalizedMessage(), 400);
         }
 
         return logs;
