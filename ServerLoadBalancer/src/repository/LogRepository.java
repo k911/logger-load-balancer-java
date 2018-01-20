@@ -1,6 +1,7 @@
 package repository;
 
 import database.MysqlDatabaseManager;
+import items.Log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,20 +18,25 @@ public class LogRepository {
         this.databaseManager = databaseManager;
     }
 
-    public void saveLog(String message) {
-        PreparedStatement statement = databaseManager.prepareStatement("INSERT INTO logs (message, attributes) VALUES (?, ?)");
+    public void add(Log log) {
+        PreparedStatement statement = databaseManager.prepareStatement("INSERT INTO logs (message, context, created_at) VALUES (?, ?, ?)");
         try {
-            statement.setString(1, message);
-            statement.setString(2, "test");
+            statement.setString(1, log.getMessage());
+            statement.setString(2, log.getContext());
+            statement.setTimestamp(3, log.getCreatedAt());
             statement.executeUpdate();
+
+            ResultSet results = statement.getGeneratedKeys();
+            if(results.next()) {
+                log.setId(results.getInt(1));
+            }
         } catch (SQLException e) {
             System.out.println("Error saving log into database: " + e.getLocalizedMessage());
         }
     }
 
-    public Collection<Map<String, String>> getLogs(int offset, int limit) {
-
-        Collection<Map<String, String>> logs = new ArrayList<>();
+    public Collection<Log> findAll(int offset, int limit) {
+        Collection<Log> logs = new ArrayList<>();
 
         PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs LIMIT ? OFFSET ?;");
         ResultSet results;
@@ -39,12 +45,7 @@ public class LogRepository {
             statement.setInt(2, offset);
             results = statement.executeQuery();
             while (results.next()) {
-                Map<String, String> log = new HashMap<>();
-                log.put("id", String.valueOf(results.getInt("id")));
-                log.put("message", results.getString("message"));
-                log.put("attributes", results.getString("attributes"));
-                log.put("created_at", results.getTimestamp("created_at").toString());
-                logs.add(log);
+                logs.add(new Log(results.getInt("id"), results.getString("message"), results.getString("context"), results.getTimestamp("created_at")));
             }
         } catch (SQLException e) {
             System.out.println("Error getting logs from database: " + e.getLocalizedMessage());

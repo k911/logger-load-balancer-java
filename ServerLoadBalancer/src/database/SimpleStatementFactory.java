@@ -28,7 +28,7 @@ public class SimpleStatementFactory implements StatementFactory {
     @Override
     public PreparedStatement prepare(String sql) {
         try {
-            return connection.prepareStatement(sql);
+            return connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException e) {
             System.out.println("Could not create statement: " + e.getLocalizedMessage() + ". SQL Query: " + sql);
         }
