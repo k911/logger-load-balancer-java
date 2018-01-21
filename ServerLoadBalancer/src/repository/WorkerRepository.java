@@ -48,14 +48,14 @@ public class WorkerRepository {
         }
     }
 
-    public Worker first() {
+    public Worker first() throws HttpException {
         ResultSet results = databaseManager.executeQuery("SELECT * FROM workers ORDER BY tasks ASC LIMIT 1;");
         try {
             if (results.next()) {
                 return new Worker(results.getInt("id"), results.getInt("tasks"), results.getInt("port"), results.getString("host"));
             }
         } catch (SQLException e) {
-            System.out.println("Error getting logs from database: " + e.getLocalizedMessage());
+            throw new HttpException("No workers set yet.", 404);
         }
 
         return null;

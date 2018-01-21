@@ -34,10 +34,22 @@ public class LogRepository {
         }
     }
 
+    public int count() {
+        try {
+            ResultSet results = databaseManager.executeQuery("SELECT COUNT(DISTINCT id) as logsCount FROM logs;");
+            if (results.next()) {
+                return results.getInt("logsCount");
+            }
+        } catch (SQLException e) {
+            System.err.println("Cannot count logs");
+        }
+        return 0;
+    }
+
     public Collection<Log> findAll(int offset, int limit) throws HttpException {
         Collection<Log> logs = new ArrayList<>();
 
-        PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs LIMIT ? OFFSET ?;");
+        PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs LIMIT ? OFFSET ? ORDER BY id ASC;");
         ResultSet results;
         try {
             statement.setInt(1, limit);

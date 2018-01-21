@@ -1,14 +1,13 @@
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import database.MysqlConnectionFactory;
 import database.MysqlDatabaseManager;
 import database.SimpleStatementFactory;
-import dotenv.Dotenv;
 import handler.*;
 import repository.LogRepository;
 import repository.WorkerRepository;
 import server.ServerCall;
+import utils.AppUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,9 +20,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class LoadBalancerServer {
+
     public static void main(String[] args) {
         // Load environment variables
-        new Dotenv().load();
+        AppUtils.loadEnvironment();
+
         boolean debug = Boolean.valueOf(System.getenv("APP_DEBUG"));
 
         // Load servers configuration
@@ -32,21 +33,16 @@ public class LoadBalancerServer {
         String socketServerHost = System.getenv("SOCKET_SERVER_HOST");
         int socketServerPort = Integer.parseInt(System.getenv("SOCKET_SERVER_PORT"));
 
-        if(httpServerHost.equals(socketServerHost) && httpServerPort == socketServerPort) {
+        if (httpServerHost.equals(socketServerHost) && httpServerPort == socketServerPort) {
             throw new RuntimeException("Could not start servers, because their hosts and ports are the same!");
         }
-
 
         String database = System.getenv("DATABASE_NAME");
         MysqlConnectionFactory connectionFactory = new MysqlConnectionFactory(System.getenv("DATABASE_URI"), System.getenv("DATABASE_USER"), System.getenv("DATABASE_PASSWORD"));
         Connection connection = connectionFactory.make();
         SimpleStatementFactory statementFactory = new SimpleStatementFactory(connection);
         MysqlDatabaseManager databaseManager = new MysqlDatabaseManager(statementFactory, database);
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("yyyy-MM-dd hh:mm:ss.S");
-        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
-        gsonBuilder.serializeNulls();
-        Gson gson = gsonBuilder.create();
+
 
         if (debug | !databaseManager.exists()) {
             if (databaseManager.exists()) {
@@ -62,6 +58,8 @@ public class LoadBalancerServer {
             setDatabase(database, connection);
         }
 
+        // Dependencies
+        Gson gson = AppUtils.buildGson();
         LogRepository logRepository = new LogRepository(databaseManager);
         WorkerRepository workerRepository = new WorkerRepository(databaseManager);
 
@@ -115,7 +113,7 @@ public class LoadBalancerServer {
                 }
             }
 
-            if(null != httpServer) {
+            if (null != httpServer) {
                 httpServer.stop(1);
             }
         }
@@ -135,4 +133,6 @@ public class LoadBalancerServer {
             e.printStackTrace();
         }
     }
+
+
 }

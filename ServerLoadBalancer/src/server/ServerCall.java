@@ -1,12 +1,12 @@
 package server;
 
-import items.GetLogsCommand;
-import items.HttpException;
-import items.Log;
 import database.ConnectionFactory;
 import database.MysqlDatabaseManager;
 import database.SimpleStatementFactory;
 import database.StatementFactory;
+import items.GetLogsCommand;
+import items.HttpException;
+import items.Log;
 import items.Worker;
 import repository.LogRepository;
 import repository.WorkerRepository;
@@ -65,6 +65,9 @@ public class ServerCall implements Callable<String> {
                             out.writeUTF(SUCCESS);
                             out.writeObject(log);
                             break;
+                        case "count_logs":
+                            out.writeInt(getLogRepository().count());
+                            break;
                         case "get_logs":
                             GetLogsCommand getLogsCommand = (GetLogsCommand) in.readObject();
                             Collection<Log> logs = getLogRepository().findAll(getLogsCommand.getOffset(), getLogsCommand.getLimit());
@@ -72,6 +75,7 @@ public class ServerCall implements Callable<String> {
                             out.writeObject(logs);
                             break;
                         case "get_worker":
+                            out.writeUTF(SUCCESS);
                             out.writeObject(getWorkerRepository().first());
                             break;
                         case "update_worker":
@@ -86,11 +90,11 @@ public class ServerCall implements Callable<String> {
                             out.writeUTF(SUCCESS);
                             out.writeObject(newWorker);
                             break;
+                        case "exit":
+                            break action_loop;
                         default:
                             System.out.println("[" + this.connectionId + "] No such command: " + command);
                             break;
-                        case "exit":
-                            break action_loop;
                     }
                 } catch (HttpException e) {
                     out.writeUTF(FAILURE);
@@ -104,7 +108,7 @@ public class ServerCall implements Callable<String> {
         } catch (EOFException e) {
             System.err.println("Unexpected end of stream");
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println(e.getLocalizedMessage());
         } finally {
             try {
                 socket.close();
@@ -117,7 +121,7 @@ public class ServerCall implements Callable<String> {
     }
 
     private WorkerRepository getWorkerRepository() {
-        if(workerRepository == null) {
+        if (workerRepository == null) {
             workerRepository = new WorkerRepository(databaseManager);
         }
 
@@ -125,7 +129,7 @@ public class ServerCall implements Callable<String> {
     }
 
     private LogRepository getLogRepository() {
-        if(logRepository == null) {
+        if (logRepository == null) {
             logRepository = new LogRepository(databaseManager);
         }
 

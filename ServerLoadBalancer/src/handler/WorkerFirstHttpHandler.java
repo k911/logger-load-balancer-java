@@ -50,10 +50,6 @@ public class WorkerFirstHttpHandler implements HttpHandler {
     private void getFirstWorker(HttpExchange http) throws IOException, HttpException {
         Worker worker = workerRepository.first();
 
-        if(null == worker) {
-            throw new HttpException("No workers set yet.", 404);
-        }
-
         String serializedWorker = this.gson.toJson(worker);
 
         http.getResponseHeaders().add("Content-Type", "application/json");
