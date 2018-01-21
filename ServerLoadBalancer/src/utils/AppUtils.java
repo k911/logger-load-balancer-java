@@ -4,8 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dotenv.Dotenv;
 
+import java.sql.Timestamp;
+
 public class AppUtils {
-    private AppUtils() {}
+
+    private AppUtils() {
+    }
 
     public static void loadEnvironment() {
         if (System.getenv("APP_ENV") == null) {

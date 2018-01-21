@@ -29,6 +29,12 @@ public class Log implements Serializable {
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
+    public Log(String message, String context, Timestamp createdAt) {
+        this.message = message;
+        this.context = context;
+        this.createdAt = createdAt;
+    }
+
     public Log(int id, String message, String context, Timestamp createdAt) {
         this.setId(id);
         this.context = context;

@@ -61,6 +61,10 @@ public class WorkerRepository {
         return null;
     }
 
+    public void truncate() {
+        databaseManager.executeUpdate("TRUNCATE workers");
+    }
+
     public Collection<Worker> findAll() {
         Collection<Worker> workers = new ArrayList<>();
 

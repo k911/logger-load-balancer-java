@@ -4,10 +4,13 @@ import database.MysqlConnectionFactory;
 import database.MysqlDatabaseManager;
 import database.SimpleStatementFactory;
 import handler.*;
+import items.HttpException;
+import items.Log;
 import repository.LogRepository;
 import repository.WorkerRepository;
 import server.ServerCall;
 import utils.AppUtils;
+import utils.RandomLogGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -43,7 +46,12 @@ public class LoadBalancerServer {
         SimpleStatementFactory statementFactory = new SimpleStatementFactory(connection);
         MysqlDatabaseManager databaseManager = new MysqlDatabaseManager(statementFactory, database);
 
+        // Dependencies
+        Gson gson = AppUtils.buildGson();
+        WorkerRepository workerRepository = new WorkerRepository(databaseManager);
+        LogRepository logRepository = new LogRepository(databaseManager);
 
+        // Data in database management
         if (debug | !databaseManager.exists()) {
             if (databaseManager.exists()) {
                 databaseManager.drop();
@@ -53,15 +61,19 @@ public class LoadBalancerServer {
             setDatabase(database, connection);
             System.out.println("Database successfully created.");
             createDatabase(databaseManager);
+
+            // Generate logs on dev mode
+            if (System.getenv("APP_ENV").equals("dev")) {
+                int generatedLogsCount = Integer.parseInt(System.getenv("APP_GENERATED_LOGS_COUNT"));
+                if (generatedLogsCount > 0) {
+                    generateLogs(gson, logRepository, generatedLogsCount);
+                }
+            }
             System.out.println("Schema successfully created.");
         } else {
             setDatabase(database, connection);
+            workerRepository.truncate();
         }
-
-        // Dependencies
-        Gson gson = AppUtils.buildGson();
-        LogRepository logRepository = new LogRepository(databaseManager);
-        WorkerRepository workerRepository = new WorkerRepository(databaseManager);
 
         // Http server handlers
         HttpExceptionHandler exceptionHandler = new HttpExceptionHandler(gson);
@@ -125,6 +137,21 @@ public class LoadBalancerServer {
         databaseManager.executeUpdate("ALTER TABLE `workers` ADD UNIQUE( `host`, `port`);");
     }
 
+    private static void generateLogs(Gson gson, LogRepository logs, int logsCount) {
+        RandomLogGenerator randomLogGenerator = new RandomLogGenerator(gson);
+        int originalLogsCount = logsCount;
+        try {
+            while (logsCount > 0) {
+                Log log = randomLogGenerator.generate();
+                logs.add(log);
+                --logsCount;
+            }
+        } catch (HttpException e) {
+            System.err.println(e.getMessage());
+        }
+        System.out.println("Successfully generated " + originalLogsCount + " logs.");
+    }
+
     private static void setDatabase(String database, Connection connection) {
         // Set database for connection
         try {
@@ -133,6 +160,4 @@ public class LoadBalancerServer {
             e.printStackTrace();
         }
     }
-
-
 }
