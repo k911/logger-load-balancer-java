@@ -1,8 +1,8 @@
-package ServerLoadBalancer.src.handler;
+package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import ServerLoadBalancer.src.items.HttpException;
+import items.HttpException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

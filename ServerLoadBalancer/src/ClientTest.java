@@ -1,11 +1,9 @@
-package ServerLoadBalancer.src;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ServerLoadBalancer.src.dotenv.Dotenv;
-import ServerLoadBalancer.src.items.Log;
-import ServerLoadBalancer.src.items.Worker;
-import ServerLoadBalancer.src.server.SocketConnectionFactory;
+import dotenv.Dotenv;
+import items.Log;
+import items.Worker;
+import server.SocketConnectionFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

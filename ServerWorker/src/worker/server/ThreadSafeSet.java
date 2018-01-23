@@ -1,4 +1,4 @@
-package ServerWorker.src.worker.server;
+package worker.server;
 
 import java.util.HashSet;
 import java.util.Set;

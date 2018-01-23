@@ -1,7 +1,6 @@
-package ServerWorker.src.worker.server.database;
+package worker.server.database;
 
-import ServerWorker.src.worker.server.database.DaoBase;
-import ServerWorker.src.worker.communication.job.Question;
+import worker.communication.job.Question;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

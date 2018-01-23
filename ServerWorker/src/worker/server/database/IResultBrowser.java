@@ -1,4 +1,4 @@
-package ServerWorker.src.worker.server.database;
+package worker.server.database;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package ServerWorker.src.worker.server.database;
+package worker.server.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;

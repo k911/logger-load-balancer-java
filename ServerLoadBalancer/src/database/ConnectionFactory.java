@@ -1,4 +1,4 @@
-package ServerLoadBalancer.src.database;
+package database;
 
 import java.sql.Connection;
 

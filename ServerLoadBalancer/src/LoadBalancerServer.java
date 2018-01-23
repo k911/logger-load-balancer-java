@@ -1,19 +1,17 @@
-package ServerLoadBalancer.src;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
-import ServerLoadBalancer.src.database.MysqlConnectionFactory;
-import ServerLoadBalancer.src.database.MysqlDatabaseManager;
-import ServerLoadBalancer.src.database.SimpleStatementFactory;
-import ServerLoadBalancer.src.dotenv.Dotenv;
-import ServerLoadBalancer.src.handler.*;
-import ServerLoadBalancer.src.items.HttpException;
-import ServerLoadBalancer.src.items.Log;
-import ServerLoadBalancer.src.repository.LogRepository;
-import ServerLoadBalancer.src.repository.WorkerRepository;
-import ServerLoadBalancer.src.server.ServerCall;
-import ServerLoadBalancer.src.utils.RandomLogGenerator;
+import database.MysqlConnectionFactory;
+import database.MysqlDatabaseManager;
+import database.SimpleStatementFactory;
+import dotenv.Dotenv;
+import handler.*;
+import items.HttpException;
+import items.Log;
+import repository.LogRepository;
+import repository.WorkerRepository;
+import server.ServerCall;
+import utils.RandomLogGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;

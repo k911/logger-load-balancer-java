@@ -1,11 +1,11 @@
-package ServerWorker.src.worker.server;
+package worker.server;
 
-import ServerWorker.src.worker.server.config.DBConnectionConfiguration;
-import ServerWorker.src.worker.server.config.WorkerConfiguration;
-import ServerWorker.src.worker.server.config.WorkerServerConfiguration;
-import ServerWorker.src.worker.server.database.DAO;
-import ServerWorker.src.worker.server.database.JDBCConnectionPool;
-import ServerWorker.src.worker.server.worker.Worker;
+import worker.server.config.DBConnectionConfiguration;
+import worker.server.config.WorkerConfiguration;
+import worker.server.config.WorkerServerConfiguration;
+import worker.server.database.DAO;
+import worker.server.database.JDBCConnectionPool;
+import worker.server.worker.Worker;
 
 import java.io.IOException;
 import java.net.InetAddress;

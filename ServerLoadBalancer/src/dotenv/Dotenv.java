@@ -1,4 +1,4 @@
-package ServerLoadBalancer.src.dotenv;
+package dotenv;
 
 import java.io.FileInputStream;
 import java.io.IOException;

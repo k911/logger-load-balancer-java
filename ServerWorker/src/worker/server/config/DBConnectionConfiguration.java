@@ -1,4 +1,4 @@
-package ServerWorker.src.worker.server.config;
+package worker.server.config;
 
 public class DBConnectionConfiguration {
 

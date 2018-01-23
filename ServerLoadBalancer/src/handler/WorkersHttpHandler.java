@@ -1,11 +1,11 @@
-package ServerLoadBalancer.src.handler;
+package handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import ServerLoadBalancer.src.items.HttpException;
-import ServerLoadBalancer.src.items.Worker;
-import ServerLoadBalancer.src.repository.WorkerRepository;
+import items.HttpException;
+import items.Worker;
+import repository.WorkerRepository;
 
 import java.io.*;
 import java.nio.charset.Charset;

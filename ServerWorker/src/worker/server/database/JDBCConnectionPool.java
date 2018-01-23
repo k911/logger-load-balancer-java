@@ -1,6 +1,6 @@
-package ServerWorker.src.worker.server.database;
+package worker.server.database;
 
-import ServerWorker.src.worker.server.ObjectPool;
+import worker.server.ObjectPool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

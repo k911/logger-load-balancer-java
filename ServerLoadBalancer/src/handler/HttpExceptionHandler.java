@@ -1,8 +1,8 @@
-package ServerLoadBalancer.src.handler;
+package handler;
 
-import ServerLoadBalancer.src.items.HttpException;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import items.HttpException;
 
 import java.io.IOException;
 import java.io.OutputStream;

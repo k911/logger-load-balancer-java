@@ -1,7 +1,7 @@
-package ServerWorker.src.worker.server.database;
+package worker.server.database;
 
-import ServerWorker.src.worker.communication.job.Question;
-import ServerWorker.src.worker.communication.job.Result;
+import worker.communication.job.Question;
+import worker.communication.job.Result;
 
 import java.util.List;
 import java.util.Map;

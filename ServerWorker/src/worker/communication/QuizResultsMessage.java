@@ -1,7 +1,7 @@
-package ServerWorker.src.worker.communication;
+package worker.communication;
 
 
-import ServerWorker.src.worker.communication.job.Result;
+import worker.communication.job.Result;
 
 import java.io.Serializable;
 import java.util.List;
