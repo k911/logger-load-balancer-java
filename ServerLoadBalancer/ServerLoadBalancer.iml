@@ -7,19 +7,20 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="mysql-connector">
+    <orderEntry type="library" exported="" name="ServerLoadBalancer" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/mysql-connector-java-5.1.45-bin.jar!/" />
+          <root url="jar://$MODULE_DIR$/gson-2.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="gson">
+    <orderEntry type="module-library" exported="">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/gson-2.8.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/mysql-connector-java-5.1.45-bin.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

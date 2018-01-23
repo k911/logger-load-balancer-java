@@ -3,8 +3,6 @@ package worker.server;
 import worker.server.config.DBConnectionConfiguration;
 import worker.server.config.WorkerConfiguration;
 import worker.server.config.WorkerServerConfiguration;
-import worker.server.database.DAO;
-import worker.server.database.JDBCConnectionPool;
 import worker.server.worker.Worker;
 
 import java.io.IOException;
@@ -33,9 +31,7 @@ public class WorkerServer implements Runnable {
     private int workerPoolSize = 30;
     private InetAddress inetAddress;
     private Integer port = 8080;
-    private DAO dao;
     private ThreadSafeSet<String> connectedUsers = new ThreadSafeSet<>();
-    private JDBCConnectionPool connectionPool;
     private WorkerServerConfiguration workerServerConfiguration;
     private volatile boolean shouldLive=true;
 
@@ -44,19 +40,9 @@ public class WorkerServer implements Runnable {
         this.workerServerConfiguration = configuration;
 
         logger.info("WorkerServer is being configured");
-        DBConnectionConfiguration connConfig = configuration.getDbConnectionConfiguration();
-
-        String url = connConfig.getDatabaseSpecificAddress() +
-                connConfig.getDatabaseServerAddress() + ":" + connConfig.getPort() + "/";
-        logger.info("creating connection pool to " + url);
-        connectionPool = new JDBCConnectionPool(connConfig.getDriverName(), url, connConfig.getUserName(),
-                connConfig.getPassword());
-
-        logger.info("Dao object created");
-
 
         this.configure(configuration);
-        logger.info("WorkerServer is almost configured");
+        logger.info("WorkerServer is configured");
 
         logger.info("Created WorkerServer with name: " + this.name + " address:" + this.inetAddress.getHostAddress());
 
@@ -122,7 +108,7 @@ public class WorkerServer implements Runnable {
             logger.info("WorkerServer " + this.name + " is waiting for client");
             try {
                 Socket client = serverSocket.accept();
-                executors.submit(new Worker(client, connectedUsers, connectionPool.checkOut(), dbSchemaName));
+                executors.submit(new Worker(client));
             } catch (IOException e) {
                 logger.warning("Exception caught when handling socket " + e.getMessage());
                 return;
