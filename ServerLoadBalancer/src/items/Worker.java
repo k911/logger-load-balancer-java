@@ -59,7 +59,7 @@ public class Worker implements Serializable {
     }
 
     public void removeTask() {
-        if(taskCount < 1) {
+        if (taskCount < 1) {
             throw new RuntimeException("Could not remove tasks, because there is none");
         }
 

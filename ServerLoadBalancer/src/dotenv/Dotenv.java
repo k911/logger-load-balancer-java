@@ -24,6 +24,12 @@ public final class Dotenv {
         this.silent = silent;
     }
 
+    public static void loadEnvironment() {
+        if (System.getenv("APP_ENV") == null) {
+            new Dotenv().load();
+        }
+    }
+
     /**
      * It load the env vars accordingly.
      */
@@ -37,11 +43,11 @@ public final class Dotenv {
             for (Map.Entry entry : prop.entrySet()) {
                 key = entry.getKey().toString();
                 if (map.get(key) == null) {
-                    if(!silent) {
+                    if (!silent) {
                         System.out.println("Loading env var " + key + " from " + envFile + ".");
                     }
                     map.put(key, entry.getValue().toString());
-                } else if(!silent) {
+                } else if (!silent) {
                     System.err.println("Env var " + key + " is already set.");
                 }
             }

@@ -66,6 +66,7 @@ public class ServerCall implements Callable<String> {
                             out.writeObject(log);
                             break;
                         case "count_logs":
+                            out.writeUTF(SUCCESS);
                             out.writeInt(getLogRepository().count());
                             break;
                         case "get_logs":

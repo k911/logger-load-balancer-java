@@ -1,15 +1,16 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import database.MysqlConnectionFactory;
 import database.MysqlDatabaseManager;
 import database.SimpleStatementFactory;
+import dotenv.Dotenv;
 import handler.*;
 import items.HttpException;
 import items.Log;
 import repository.LogRepository;
 import repository.WorkerRepository;
 import server.ServerCall;
-import utils.AppUtils;
 import utils.RandomLogGenerator;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class LoadBalancerServer {
 
     public static void main(String[] args) {
         // Load environment variables
-        AppUtils.loadEnvironment();
+        Dotenv.loadEnvironment();
 
         boolean debug = Boolean.valueOf(System.getenv("APP_DEBUG"));
 
@@ -47,7 +48,7 @@ public class LoadBalancerServer {
         MysqlDatabaseManager databaseManager = new MysqlDatabaseManager(statementFactory, database);
 
         // Dependencies
-        Gson gson = AppUtils.buildGson();
+        Gson gson = buildGson();
         WorkerRepository workerRepository = new WorkerRepository(databaseManager);
         LogRepository logRepository = new LogRepository(databaseManager);
 
@@ -159,5 +160,13 @@ public class LoadBalancerServer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private static Gson buildGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("yyyy-MM-dd hh:mm:ss.S");
+        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+        gsonBuilder.serializeNulls();
+        return gsonBuilder.create();
     }
 }

@@ -8,11 +8,9 @@ import items.Log;
 import repository.LogRepository;
 
 import java.io.*;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LogsHttpHandler implements HttpHandler {
@@ -85,7 +83,7 @@ public class LogsHttpHandler implements HttpHandler {
             }
         }
 
-        if(exception.hasErrors()) {
+        if (exception.hasErrors()) {
             throw exception;
         }
 
