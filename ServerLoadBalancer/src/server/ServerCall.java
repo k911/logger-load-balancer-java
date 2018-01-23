@@ -1,15 +1,15 @@
-package server;
+package ServerLoadBalancer.src.server;
 
-import database.ConnectionFactory;
-import database.MysqlDatabaseManager;
-import database.SimpleStatementFactory;
-import database.StatementFactory;
-import items.GetLogsCommand;
-import items.HttpException;
-import items.Log;
-import items.Worker;
-import repository.LogRepository;
-import repository.WorkerRepository;
+import ServerLoadBalancer.src.database.ConnectionFactory;
+import ServerLoadBalancer.src.database.MysqlDatabaseManager;
+import ServerLoadBalancer.src.database.SimpleStatementFactory;
+import ServerLoadBalancer.src.database.StatementFactory;
+import ServerLoadBalancer.src.items.GetLogsCommand;
+import ServerLoadBalancer.src.items.HttpException;
+import ServerLoadBalancer.src.items.Log;
+import ServerLoadBalancer.src.items.Worker;
+import ServerLoadBalancer.src.repository.LogRepository;
+import ServerLoadBalancer.src.repository.WorkerRepository;
 
 import java.io.EOFException;
 import java.io.IOException;

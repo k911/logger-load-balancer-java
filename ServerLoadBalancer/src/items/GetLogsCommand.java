@@ -1,4 +1,4 @@
-package items;
+package ServerLoadBalancer.src.items;
 
 public class GetLogsCommand {
     private int offset;

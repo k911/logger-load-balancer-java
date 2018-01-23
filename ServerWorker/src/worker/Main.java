@@ -1,7 +1,7 @@
-package worker;
+package ServerWorker.src.worker;
 
-import worker.server.WorkerServer;
-import worker.server.config.*;
+import ServerWorker.src.worker.server.WorkerServer;
+import ServerWorker.src.worker.server.config.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

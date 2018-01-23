@@ -1,4 +1,4 @@
-package worker.server;
+package ServerWorker.src.worker.server;
 
 import java.util.Enumeration;
 import java.util.Hashtable;

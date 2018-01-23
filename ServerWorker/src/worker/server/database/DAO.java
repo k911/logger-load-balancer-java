@@ -1,6 +1,6 @@
-package worker.server.database;
+package ServerWorker.src.worker.server.database;
 
-import worker.server.config.DaoConfiguration;
+import ServerWorker.src.worker.server.config.DaoConfiguration;
 
 import java.sql.Connection;
 import java.sql.Statement;

@@ -1,4 +1,4 @@
-package server;
+package ServerLoadBalancer.src.server;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package worker.server;
+package ServerWorker.src.worker.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

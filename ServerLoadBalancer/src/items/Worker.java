@@ -1,5 +1,6 @@
-package items;
+package ServerLoadBalancer.src.items;
 
+//import ServerLoadBalancer.src.items.Expose;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package utils;
+package ServerLoadBalancer.src.utils;
 
 import com.google.gson.annotations.Expose;
 

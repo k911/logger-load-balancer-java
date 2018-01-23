@@ -1,4 +1,4 @@
-package worker.communication;
+package ServerWorker.src.worker.communication;
 
 import java.io.Serializable;
 

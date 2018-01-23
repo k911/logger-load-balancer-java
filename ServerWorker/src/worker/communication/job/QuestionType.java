@@ -1,4 +1,4 @@
-package worker.communication.job;
+package ServerWorker.src.worker.communication.job;
 
 public enum QuestionType {
 

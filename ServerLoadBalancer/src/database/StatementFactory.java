@@ -1,4 +1,4 @@
-package database;
+package ServerLoadBalancer.src.database;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;

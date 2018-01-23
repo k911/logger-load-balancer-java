@@ -1,12 +1,12 @@
-package worker.server.worker;
+package ServerWorker.src.worker.server.worker;
 
-import worker.communication.job.Answer;
-import worker.communication.job.Question;
-import worker.communication.job.Result;
-import worker.server.ThreadSafeSet;
-import worker.server.database.IQuizDAO;
-import worker.server.database.QuizDAO;
-import worker.communication.*;
+import ServerWorker.src.worker.communication.job.Answer;
+import ServerWorker.src.worker.communication.job.Question;
+import ServerWorker.src.worker.communication.job.Result;
+import ServerWorker.src.worker.server.ThreadSafeSet;
+import ServerWorker.src.worker.server.database.IQuizDAO;
+import ServerWorker.src.worker.server.database.QuizDAO;
+import ServerWorker.src.worker.communication.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

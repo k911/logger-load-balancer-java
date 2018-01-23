@@ -1,4 +1,4 @@
-package items;
+package ServerLoadBalancer.src.items;
 
 import com.google.gson.annotations.Expose;
 

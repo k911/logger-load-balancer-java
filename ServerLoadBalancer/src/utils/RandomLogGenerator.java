@@ -1,7 +1,7 @@
-package utils;
+package ServerLoadBalancer.src.utils;
 
 import com.google.gson.Gson;
-import items.Log;
+import ServerLoadBalancer.src.items.Log;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

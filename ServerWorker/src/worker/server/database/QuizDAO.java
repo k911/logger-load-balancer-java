@@ -1,8 +1,8 @@
-package worker.server.database;
+package ServerWorker.src.worker.server.database;
 
-import worker.communication.job.Question;
-import worker.communication.job.QuestionType;
-import worker.communication.job.Result;
+import ServerWorker.src.worker.communication.job.Question;
+import ServerWorker.src.worker.communication.job.QuestionType;
+import ServerWorker.src.worker.communication.job.Result;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

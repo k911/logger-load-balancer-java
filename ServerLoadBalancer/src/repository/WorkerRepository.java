@@ -1,8 +1,8 @@
-package repository;
+package ServerLoadBalancer.src.repository;
 
-import database.MysqlDatabaseManager;
-import items.HttpException;
-import items.Worker;
+import ServerLoadBalancer.src.database.MysqlDatabaseManager;
+import ServerLoadBalancer.src.items.HttpException;
+import ServerLoadBalancer.src.items.Worker;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

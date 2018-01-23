@@ -1,4 +1,4 @@
-package worker.server.database;
+package ServerWorker.src.worker.server.database;
 
 //jdbc queries
 

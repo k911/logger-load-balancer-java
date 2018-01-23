@@ -1,4 +1,4 @@
-package server;
+package ServerLoadBalancer.src.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
