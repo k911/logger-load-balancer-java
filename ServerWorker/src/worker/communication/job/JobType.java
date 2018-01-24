@@ -3,10 +3,15 @@ package worker.communication.job;
 import java.io.Serializable;
 
 public enum JobType  {
-    JOB_1,
-    JOB_2,
-    JOB_3,
-    JOB_4 //etc #TODO use human readable values
+    CALC_PHRASE_OCCURENCES,
+    FIND_MIN,
+    FIND_MAX,
+    CALC_ARITHMETIC_MEAN,
+    CALC_GEOMETRIC_MEAN,
+    CALC_MEDIAN,
+    CALC_NUMBER_OCCURENCES,
+    CALC_VARIANCE,
+    CALC_STANDARD_DEVIATION
 
 
 }
