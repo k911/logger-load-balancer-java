@@ -74,11 +74,11 @@ public class SchedulerConnection {
 			out.writeUTF("add_log");
 			out.writeObject(log);
 			out.flush();
-
 			checkForFailure(in);
+			log = (Log) in.readObject();
 			
 			// Print message and close connection
-			logger.info("Success while addying a new log");
+			logger.info("Success while adding a new log (ID: " + log.getId() + ")");
 			SendLogsController.getController().setLogsStatusLabel("success", "Przesłano logi!!");
 		
 			out.writeUTF("exit");
