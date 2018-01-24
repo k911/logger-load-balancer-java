@@ -49,7 +49,7 @@ public class LogRepository {
     public Collection<Log> findAll(int offset, int limit) throws HttpException {
         Collection<Log> logs = new ArrayList<>();
 
-        PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs LIMIT ? OFFSET ? ORDER BY id ASC;");
+        PreparedStatement statement = databaseManager.prepareStatement("SELECT * FROM logs ORDER BY id ASC LIMIT ? OFFSET ?;");
         ResultSet results;
         try {
             statement.setInt(1, limit);
