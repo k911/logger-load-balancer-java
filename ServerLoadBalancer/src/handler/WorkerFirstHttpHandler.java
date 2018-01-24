@@ -7,10 +7,8 @@ import items.HttpException;
 import items.Worker;
 import repository.WorkerRepository;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class WorkerFirstHttpHandler implements HttpHandler {
 

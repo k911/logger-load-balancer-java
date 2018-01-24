@@ -41,7 +41,7 @@ public class MysqlConnectionFactory implements ConnectionFactory {
     public Connection make(String database) {
         Connection connection = make();
 
-        if(null != connection) {
+        if (null != connection) {
             try {
                 connection.setCatalog(database);
                 return connection;

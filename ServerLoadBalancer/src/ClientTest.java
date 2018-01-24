@@ -1,9 +1,9 @@
-
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dotenv.Dotenv;
 import items.Log;
 import items.Worker;
 import server.SocketConnectionFactory;
-import utils.AppUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,10 +13,10 @@ import java.net.Socket;
 public class ClientTest {
     public static void main(String args[]) {
         // Load environment variables
-        AppUtils.loadEnvironment();
+        Dotenv.loadEnvironment();
 
         // Dependencies
-        Gson gson = AppUtils.buildGson();
+        Gson gson = buildGson();
         SocketConnectionFactory socketConnectionFactory = new SocketConnectionFactory("SOCKET_SERVER_HOST", "SOCKET_SERVER_PORT");
 
         try {
@@ -96,6 +96,14 @@ public class ClientTest {
         if (in.readUTF().equals("FAILURE")) {
             throw new RuntimeException(in.readUTF());
         }
+    }
+
+    private static Gson buildGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("yyyy-MM-dd hh:mm:ss.S");
+        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+        gsonBuilder.serializeNulls();
+        return gsonBuilder.create();
     }
 }
 

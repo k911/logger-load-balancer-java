@@ -2,7 +2,6 @@ package repository;
 
 import database.MysqlDatabaseManager;
 import items.HttpException;
-import items.Log;
 import items.Worker;
 
 import java.sql.PreparedStatement;
@@ -27,7 +26,7 @@ public class WorkerRepository {
             statement.executeUpdate();
 
             ResultSet results = statement.getGeneratedKeys();
-            if(results.next()) {
+            if (results.next()) {
                 worker.setId(results.getInt(1));
             }
         } catch (SQLException e) {
