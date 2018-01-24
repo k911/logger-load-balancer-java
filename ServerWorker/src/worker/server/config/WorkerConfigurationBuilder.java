@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WorkerConfigurationBuilder {
 
-    private String name = "Worker";
+    private String name = "RunnableWorker";
     private TimeUnit timeoutUnit = TimeUnit.SECONDS;
     private int executorShutdownTimeout = 3;
     private int threadPoolSize = 5;

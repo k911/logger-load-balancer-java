@@ -1,6 +1,6 @@
-package items;
+package worker.communication.scheduler;
 
-import com.google.gson.annotations.Expose;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,13 +9,9 @@ import java.util.Collection;
 public class HttpException extends Throwable implements Serializable {
 
     private static final long serialVersionUID = 1337192451315488074L;
-    @Expose
+
     private String message;
-
-    @Expose
     private int statusCode;
-
-    @Expose
     private Collection<String> errors;
 
     public HttpException(String message, int statusCode) {
