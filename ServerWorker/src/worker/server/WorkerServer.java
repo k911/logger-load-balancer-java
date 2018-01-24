@@ -147,7 +147,7 @@ public class WorkerServer implements Runnable {
 
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(0);
         } catch (IOException e) {
             logger.warning(name + " " + e.getMessage());
             return;
