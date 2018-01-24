@@ -1,12 +1,12 @@
 package worker;
 
 import worker.server.WorkerServer;
-import worker.server.config.*;
+import worker.server.config.WorkerConfiguration;
+import worker.server.config.WorkerConfigurationBuilder;
+import worker.server.config.WorkerServerConfiguration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class Main {
@@ -37,15 +37,10 @@ public class Main {
         }
         serverConfiguration.setPort(8082);
         serverConfiguration.setServerThreadPoolSize(30);
-        List<WorkerConfiguration> workerConfigurations;
-        workerConfigurations = new ArrayList<>();
+        WorkerConfiguration workerConfiguration = new WorkerConfigurationBuilder().name("Worker-Calc")
+                .threadPoolSize(5).buildWorkerConfiguration();
 
-        workerConfigurations.add(new WorkerConfigurationBuilder().name("Worker-1").buildWorkerConfiguration());
-        workerConfigurations.add(new WorkerConfigurationBuilder().name("Worker-2").buildWorkerConfiguration());
-        workerConfigurations.add(new WorkerConfigurationBuilder().name("Worker-3").buildWorkerConfiguration());
-        workerConfigurations.add(new WorkerConfigurationBuilder().name("Worker-4").buildWorkerConfiguration());
-        workerConfigurations.add(new WorkerConfigurationBuilder().name("Worker-5").buildWorkerConfiguration());
-        serverConfiguration.setWorkerConfigurations(workerConfigurations);
+        serverConfiguration.setWorkerConfigurations(workerConfiguration);
 
 
         return serverConfiguration;
