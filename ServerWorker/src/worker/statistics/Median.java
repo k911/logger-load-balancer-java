@@ -12,18 +12,14 @@ public class Median {
     static ArrayList<Long> list;
 
 
-    private static void sort(){
-        Collections.sort(list, new CustomComparator());
-    }
-
-    public static double CalculateMedian(ArrayList<Long> list) {
+    public static Long CalculateMedian(ArrayList<Long> list) {
         try {
-            sort();
+            Collections.sort(list);
             int middle = list.size() / 2;
             if (list.size() % 2 == 1) {
                 return list.get(middle);
             } else {
-                return (list.get(middle - 1) + list.get(middle)) / 2.0;
+                return (list.get(middle - 1) + list.get(middle)) / 2;
             }
         }
         catch(java.lang.NullPointerException exception) {

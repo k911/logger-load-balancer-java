@@ -9,7 +9,7 @@ public class StandardDeviation {
     }
     ArrayList<Long> list;
 
-    static double CalculateStandardDeviation(ArrayList<Long> list)
+    public static double CalculateStandardDeviation(ArrayList<Long> list)
     {
        try {
            return Math.sqrt(Variance.CalculateVariance(list));

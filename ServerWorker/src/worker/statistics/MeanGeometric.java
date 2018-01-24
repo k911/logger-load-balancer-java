@@ -1,7 +1,6 @@
 package worker.statistics;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class MeanGeometric {
 
@@ -12,11 +11,11 @@ public class MeanGeometric {
 
     public static double CalculateGeometricMean(ArrayList<Long> list) {
         try{
-        double result = 1.0;
+        double result = 1l;
         for (int i = 0; i < list.size(); i++) {
-            result *= (double)(list.get(i));
+            result *= (Long)(list.get(i));
         }
-        result = Math.pow(result, 1.0/(double)list.size());
+        result =  Math.pow(result, 1.0/list.size());
         return result;
     }
         catch(java.lang.NullPointerException exception) {

@@ -9,7 +9,7 @@ public class Max {
     }
     ArrayList<Long> list;
 
-    static long CalculateMax(ArrayList<Long> list)
+    public static long CalculateMax(ArrayList<Long> list)
     {
         try {
             return(Collections.max(list));

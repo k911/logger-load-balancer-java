@@ -9,7 +9,7 @@ public class Min {
     }
     ArrayList<Long> list;
 
-    static long CalculateMin(ArrayList<Long> list)
+    public static long CalculateMin(ArrayList<Long> list)
     {
         try {
             return(Collections.min(list));
