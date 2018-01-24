@@ -30,6 +30,8 @@ public class WorkerServer implements Runnable {
     private volatile boolean shouldLive = true;
     private InetAddress schedulerAddress;
     private Integer schedulerPort;
+    private Worker worker;
+    private Socket scheduler;
 
     public WorkerServer(WorkerServerConfiguration configuration) {
         this.workerServerConfiguration = configuration;
@@ -115,12 +117,12 @@ public class WorkerServer implements Runnable {
         try {
             logger.info("Registering Worker Server: " + this.name + " with Scheduler on "
                     + this.schedulerAddress.getCanonicalHostName() + ":" + this.schedulerPort);
-            Socket scheduler = new Socket(InetAddress.getByName(System.getenv("SOCKET_SERVER_HOST")), schedulerPort);
+            scheduler = new Socket(InetAddress.getByName(System.getenv("SOCKET_SERVER_HOST")), schedulerPort);
 
             ObjectOutputStream output = new ObjectOutputStream(scheduler.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(scheduler.getInputStream());
 
-            Worker worker = new Worker(this.port, this.inetAddress.getHostAddress());
+            worker = new Worker(this.port, this.inetAddress.getHostAddress());
             output.writeUTF("add_worker");
             output.writeObject(worker);
             String response = input.readUTF();
@@ -128,11 +130,7 @@ public class WorkerServer implements Runnable {
             if (response.equals("SUCCESS")) {
                 worker = (Worker) input.readObject();
                 System.out.println("WORKER ID:" + worker.getId());
-                output.writeUTF("exit");
-                output.flush();
             }
-
-            scheduler.close();
 
             return response.equals("SUCCESS");
 
