@@ -12,9 +12,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 
@@ -92,11 +90,26 @@ public class WorkerServer implements Runnable {
     public void run() {
         logger.info("Server " + this.name + " thread is started: " + Thread.currentThread().getName());
 
-        if(!registerWorker())
-        {
-            logger.warning("Worker Server registration failed! Server will shut down");
+
+        Future<Boolean> future=null;
+        try {
+
+            ExecutorService e = Executors.newSingleThreadExecutor();
+            Callable<Boolean> registrationTask = ()->registerWorker();
+            future = e.submit(registrationTask);
+            if(!future.get(15, TimeUnit.SECONDS))
+            {
+                logger.severe("Worker Server registration failed! Server will shut down");
+                return;
+            }
+
+        } catch (TimeoutException | InterruptedException | ExecutionException e) {
+            logger.severe(e.getMessage());
+            logger.severe("Server could not register with Scheduler due to the timeout - shutting down");
+            future.cancel(true);
             return;
         }
+
 
         logger.info("Request Handler is starting");
         handleRequests();
@@ -111,11 +124,12 @@ public class WorkerServer implements Runnable {
 
     private boolean registerWorker(){
         try{
+            logger.info("Registering Worker Server: "+this.name+" with Scheduler on "+this.schedulerAddress.getHostAddress());
             Socket scheduler=new Socket(schedulerAddress.getHostAddress(),schedulerPort);
 
             ObjectOutputStream output = new ObjectOutputStream(scheduler.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(scheduler.getInputStream());
-            logger.info("Registerting Worker Server: "+this.name+" with Scheduler on "+this.schedulerAddress.getHostAddress());
+
             Worker worker = new Worker(this.port, this.inetAddress.getHostAddress());
             output.writeUTF("add_worker");
             output.writeObject(worker);

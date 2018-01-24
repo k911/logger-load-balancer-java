@@ -21,7 +21,19 @@ public class Main {
 
         WorkerServer workerServer = new WorkerServer(serverConfiguration);
 
-        workerServer.run();
+        Thread server=new Thread(workerServer);
+        server.run();
+
+
+
+        try {
+            server.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        System.out.println("Bye");
 
     }
 
