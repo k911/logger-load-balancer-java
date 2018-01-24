@@ -1,4 +1,4 @@
-package ServerWorker.src.worker.statistics;
+package worker.statistics;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
