@@ -1,6 +1,5 @@
-package items;
+package worker.communication.scheduler;
 
-import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -8,17 +7,12 @@ import java.sql.Timestamp;
 public class Log implements Serializable {
 
     private static final long serialVersionUID = 7924725717075936634L;
-    @Expose
+
     private int id = -1;
-
-    @Expose
     private String message = null;
-
-    @Expose
     private String context = null;
-
-    @Expose
     private Timestamp createdAt;
+
 
     public Log() {
         this.createdAt = new Timestamp(System.currentTimeMillis());

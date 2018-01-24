@@ -1,22 +1,15 @@
-package items;
+package worker.communication.scheduler;
 
-import com.google.gson.annotations.Expose;
+
 
 import java.io.Serializable;
 
 public class Worker implements Serializable {
 
     private static final long serialVersionUID = 5873709861586747341L;
-    @Expose
     private int id = -1;
-
-    @Expose
     private int taskCount = 0;
-
-    @Expose
     private int port = -1;
-
-    @Expose
     private String host;
 
     public Worker(int id, int taskCount, int port, String host) {
