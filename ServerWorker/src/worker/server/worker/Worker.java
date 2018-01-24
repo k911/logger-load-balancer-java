@@ -70,8 +70,8 @@ public class Worker implements Runnable {
                             performClose();
                             break;
                         }
-                        //#TODO implement this
-                        if (receivedMessage instanceof RequestQuizListMessage) {
+                        //#TODO implement logic here
+                        if (receivedMessage instanceof SocketMessage) {
 
                         } else if (receivedMessage instanceof EndCommunicationMessage) {
                             performClose();
@@ -116,7 +116,7 @@ public class Worker implements Runnable {
     }
 
     private boolean isLoginMessage(Object message) {
-        return (isValidMessage(message) && message instanceof QuizLoginMessage);
+        return (isValidMessage(message) && message instanceof LoginMessage);
     }
 
     private void sendRejectionMessage(String message) throws IOException {

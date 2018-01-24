@@ -11,8 +11,6 @@ public class WorkerServerConfiguration {
     private Optional<Integer> port;
     private Optional<Integer> serverThreadPoolSize;
     private Optional<List<WorkerConfiguration>> workerConfigurations;
-    private DBConnectionConfiguration dbConnectionConfiguration;
-    private DaoConfiguration daoConfiguration;
 
     public WorkerServerConfiguration() {
     }
@@ -66,19 +64,4 @@ public class WorkerServerConfiguration {
         this.serverThreadPoolSize = Optional.ofNullable(serverThreadPoolSize);
     }
 
-    public DBConnectionConfiguration getDbConnectionConfiguration() {
-        return dbConnectionConfiguration;
-    }
-
-    public void setDbConnectionConfiguration(DBConnectionConfiguration dbConnectionConfiguration) {
-        this.dbConnectionConfiguration = dbConnectionConfiguration;
-    }
-
-    public DaoConfiguration getDaoConfiguration() {
-        return daoConfiguration;
-    }
-
-    public void setDaoConfiguration(DaoConfiguration daoConfiguration) {
-        this.daoConfiguration = daoConfiguration;
-    }
 }
