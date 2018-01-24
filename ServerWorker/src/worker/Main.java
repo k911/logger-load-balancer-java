@@ -37,6 +37,16 @@ public class Main {
         }
         serverConfiguration.setPort(8082);
         serverConfiguration.setServerThreadPoolSize(30);
+
+        try {
+            serverConfiguration.setSchedulerAddress(InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            logger.severe("Configuration setup failed. Could not resolve InetAddress "
+                    + e.getMessage());
+        }
+        serverConfiguration.setSchedulerPort(80);
+
+
         WorkerConfiguration workerConfiguration = new WorkerConfigurationBuilder().name("Worker-Calc")
                 .threadPoolSize(5).buildWorkerConfiguration();
 

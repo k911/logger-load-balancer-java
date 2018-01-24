@@ -21,14 +21,16 @@ public class WorkerServer implements Runnable {
     private final static Logger logger = Logger.getLogger(WorkerServer.class.getName());
     ExecutorService executors;
 
-    private WorkerConfiguration workerConfiguration = new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3);
-    private String name = "Worker-Server";
-    private int workerPoolSize = 30;
+    private WorkerConfiguration workerConfiguration;
+    private String name;
+    private int workerPoolSize;
     private InetAddress inetAddress;
-    private Integer port = 8080;
+    private Integer port;
     private ThreadSafeSet<String> connectedUsers = new ThreadSafeSet<>();
     private WorkerServerConfiguration workerServerConfiguration;
-    private volatile boolean shouldLive=true;
+    private volatile boolean shouldLive = true;
+    private InetAddress schedulerAddress;
+    private Integer schedulerPort;
 
 
     public WorkerServer(WorkerServerConfiguration configuration) {
@@ -45,14 +47,15 @@ public class WorkerServer implements Runnable {
 
     private void configure(WorkerServerConfiguration configuration) {
 
-        if (configuration.getName().isPresent())
-            this.name = configuration.getName().get();
 
-        if (configuration.getWorkerConfiguration().isPresent())
-            workerConfiguration = configuration.getWorkerConfiguration().get();
+            this.name = configuration.getName().orElse("Worker-Server");
 
-        if (configuration.getServerThreadPoolSize().isPresent())
-            workerPoolSize = configuration.getServerThreadPoolSize().get();
+
+            workerConfiguration = configuration.getWorkerConfiguration()
+                    .orElse(new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3));
+
+
+            workerPoolSize = configuration.getServerThreadPoolSize().orElse(30);
 
         if (configuration.getInetAddress().isPresent())
             this.inetAddress = configuration.getInetAddress().get();
@@ -64,7 +67,20 @@ public class WorkerServer implements Runnable {
             }
         }
         if (configuration.getPort().isPresent())
-            this.port = configuration.getPort().get();
+            this.port = configuration.getPort().orElse(8080);
+
+        if(configuration.getSchedulerAddress().isPresent())
+            this.schedulerAddress=configuration.getInetAddress().get();
+        else{
+            try {
+                this.inetAddress = InetAddress.getByName("127.0.0.1");
+            } catch (UnknownHostException e) {
+                logger.severe("Unable to create InetAddress:" + e.getMessage());
+            }
+        }
+
+        if (configuration.getSchedulerPort().isPresent())
+            this.schedulerPort = configuration.getSchedulerPort().orElse(80);
 
 
     }
@@ -77,11 +93,18 @@ public class WorkerServer implements Runnable {
         handleRequests();
 
 
-
     }
 
-    public void stop(){
-        shouldLive=false;
+    public void stop() {
+        shouldLive = false;
+    }
+
+
+    private boolean registerWorker(){
+
+
+        return false;
+
     }
 
 
@@ -103,7 +126,7 @@ public class WorkerServer implements Runnable {
             logger.info("WorkerServer " + this.name + " is waiting for client");
             try {
                 Socket client = serverSocket.accept();
-                executors.submit(new Worker(client,workerConfiguration,connectedUsers));
+                executors.submit(new Worker(client, workerConfiguration, connectedUsers));
             } catch (IOException e) {
                 logger.warning("Exception caught when handling socket " + e.getMessage());
                 return;
