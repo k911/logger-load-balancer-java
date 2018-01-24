@@ -1,27 +1,27 @@
 package application;
 
 import java.io.IOException;
+
 import java.util.HashMap;
 
-import com.google.gson.Gson;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import utils.AppUtils;
-import utils.RandomLogGenerator;
+import connections.SchedulerConnection;
 
 public class Main extends Application {
 	private static Stage stage;
 	private static HashMap<String, Scene> scenes = new HashMap<>();
-	private static Gson gson = AppUtils.buildGson();
-	private static RandomLogGenerator logGenerator = new RandomLogGenerator(gson);
-
+    private final static Logger logger = Logger.getLogger(Main.class.getName());
+	private static SchedulerConnection schedulerConnection = new SchedulerConnection();
+	
 	@Override
 	public void start(Stage stage) {
-		this.stage = stage;
+		Main.stage = stage;
 
 		// Configure primary stage
 		configureStage();
@@ -37,6 +37,10 @@ public class Main extends Application {
 		stage.setScene(scenes.get(sceneName));
 		stage.show();
 	}
+	
+	public static SchedulerConnection getSchedulerConnection () {
+		return schedulerConnection;
+	}
 
 	private void configureStage() {
 		stage.setResizable(false);
@@ -44,12 +48,12 @@ public class Main extends Application {
 
 	private void configureAllScenes() {
 		configureScene((Pane) loadResource("start"), 200, 100);
-		configureScene((Pane) loadResource("sendLogs"), 500, 806);
+		configureScene((Pane) loadResource("sendLogs"), 500, 404);
 		configureScene((Pane) loadResource("launchTask"), 500, 806);
 	}
 
 	private void configureScene(Pane pane, int width, int height) {
-		System.out.println("Configuring layout: " + pane.getId());
+		logger.info("Configuring layout: " + pane.getId());
 		scenes.put(pane.getId(), new Scene(pane, width, height));
 	}
 
@@ -57,7 +61,7 @@ public class Main extends Application {
 		try {
 			return FXMLLoader.load(getClass().getResource("../layouts/" + resourceName + ".fxml"));
 		} catch (IOException err) {
-			System.out.println("Error while trying to reach scene resource");
+			logger.severe("Error while trying to reach scene resource: " + err.getMessage());
 			err.printStackTrace();
 		}
 		return null;

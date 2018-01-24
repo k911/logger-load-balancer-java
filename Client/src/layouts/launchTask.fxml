@@ -11,7 +11,7 @@
       <Pane layoutX="9.0" layoutY="6.0">
          <children>
             <TextArea fx:id="taskOutputArea" editable="false" focusTraversable="false" layoutX="1.0" layoutY="233.0" pickOnBounds="false" prefHeight="557.0" prefWidth="480.0" />
-            <Label fx:id="taskNumberLabel" layoutX="14.0" layoutY="210.0" text="Wynik taska nr. ?: " />
+            <Label fx:id="taskNumberLabel" layoutX="14.0" layoutY="210.0" text="Wynik taska nr. 1: " />
             <Button fx:id="goToMenuButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#setStartScene" text="Wróc do menu" />
             <Button fx:id="sendLogsButton" layoutX="270.0" layoutY="14.0" mnemonicParsing="false" onAction="#setSendLogsScene" text="Przejdź do wysyłania logów" />
             <GridPane alignment="CENTER" hgap="50.0" layoutX="19.0" layoutY="65.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="108.0" prefWidth="443.0" vgap="10.0">
@@ -26,19 +26,19 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <RadioButton mnemonicParsing="false" text="Task2" GridPane.columnIndex="1">
+                  <RadioButton fx:id="t1" mnemonicParsing="false" selected="true" text="Task1">
                      <toggleGroup>
                         <ToggleGroup fx:id="taskGroup" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" selected="true" text="Task1" toggleGroup="$taskGroup" />
-                  <RadioButton mnemonicParsing="false" text="Task3" toggleGroup="$taskGroup" GridPane.rowIndex="1" />
-                  <RadioButton mnemonicParsing="false" text="Task4" toggleGroup="$taskGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <RadioButton mnemonicParsing="false" text="Task5" toggleGroup="$taskGroup" GridPane.rowIndex="2" />
-                  <RadioButton mnemonicParsing="false" text="Task6" toggleGroup="$taskGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <RadioButton mnemonicParsing="false" text="Task8" toggleGroup="$taskGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <RadioButton mnemonicParsing="false" text="Task7" toggleGroup="$taskGroup" GridPane.columnIndex="2" />
-                  <RadioButton mnemonicParsing="false" text="Task9" toggleGroup="$taskGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="t3" mnemonicParsing="false" text="Task3" toggleGroup="$taskGroup" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="t4" mnemonicParsing="false" text="Task4" toggleGroup="$taskGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="t5" mnemonicParsing="false" text="Task5" toggleGroup="$taskGroup" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="t6" mnemonicParsing="false" text="Task6" toggleGroup="$taskGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="t8" mnemonicParsing="false" text="Task8" toggleGroup="$taskGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="t9" mnemonicParsing="false" text="Task9" toggleGroup="$taskGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="t2" mnemonicParsing="false" text="Task2" toggleGroup="$taskGroup" GridPane.columnIndex="1" />
+                  <RadioButton fx:id="t7" mnemonicParsing="false" text="Task7" toggleGroup="$taskGroup" GridPane.columnIndex="2" />
                </children>
             </GridPane>
             <Button fx:id="launchTaskButton" layoutX="353.0" layoutY="198.0" mnemonicParsing="false" onAction="#launchTask" text="Uruchom task" />

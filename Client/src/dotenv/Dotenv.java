@@ -8,9 +8,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public final class Dotenv {
-
+    private final static Logger logger = Logger.getLogger(Dotenv.class.getName());
     private String envFile;
     private boolean silent;
 
@@ -24,30 +25,36 @@ public final class Dotenv {
         this.silent = silent;
     }
 
+    public static void loadEnvironment() {
+        if (System.getenv("APP_ENV") == null) {
+            new Dotenv().load();
+        }
+    }
+
     /**
      * It load the env vars accordingly.
      */
     public void load() {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(envFile);
+            InputStream inputStream = new FileInputStream("../" + envFile);
             prop.load(inputStream);
             Map<String, String> map = new LinkedHashMap<>(System.getenv());
             String key;
             for (Map.Entry entry : prop.entrySet()) {
                 key = entry.getKey().toString();
                 if (map.get(key) == null) {
-                    if(!silent) {
-                        System.out.println("Loading env var " + key + " from " + envFile + ".");
+                    if (!silent) {
+                        logger.info("Loading env var " + key + " from " + envFile + ".");
                     }
                     map.put(key, entry.getValue().toString());
-                } else if(!silent) {
-                    System.err.println("Env var " + key + " is already set.");
+                } else if (!silent) {
+                  logger.severe("Env var " + key + " is already set.");
                 }
             }
             Dotenv.setEnv(map);
         } catch (IOException e) {
-            System.err.println("It was not possible to load properties from '" + envFile + "'.");
+            logger.severe("It was not possible to load properties from '" + envFile + "'.");
         }
     }
 

@@ -1,10 +1,9 @@
 package utils;
 
 import com.google.gson.Gson;
+
 import com.google.gson.GsonBuilder;
 import dotenv.Dotenv;
-
-import java.sql.Timestamp;
 
 public class AppUtils {
 
@@ -22,6 +21,6 @@ public class AppUtils {
         gsonBuilder.setDateFormat("yyyy-MM-dd hh:mm:ss.S");
         gsonBuilder.excludeFieldsWithoutExposeAnnotation();
         gsonBuilder.serializeNulls();
-        return gsonBuilder.create();
+        return gsonBuilder.setPrettyPrinting().create();
     }
 }
