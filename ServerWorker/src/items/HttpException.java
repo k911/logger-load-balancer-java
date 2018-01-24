@@ -1,6 +1,4 @@
-package worker.communication.scheduler;
-
-
+package items;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,8 +8,13 @@ public class HttpException extends Throwable implements Serializable {
 
     private static final long serialVersionUID = 1337192451315488074L;
 
+
     private String message;
+
+
     private int statusCode;
+
+
     private Collection<String> errors;
 
     public HttpException(String message, int statusCode) {

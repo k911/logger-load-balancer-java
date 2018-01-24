@@ -1,5 +1,4 @@
-package worker.communication.scheduler;
-
+package items;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -8,11 +7,17 @@ public class Log implements Serializable {
 
     private static final long serialVersionUID = 7924725717075936634L;
 
-    private int id = -1;
-    private String message = null;
-    private String context = null;
-    private Timestamp createdAt;
 
+    private int id = -1;
+
+
+    private String message = null;
+
+
+    private String context = null;
+
+
+    private Timestamp createdAt;
 
     public Log() {
         this.createdAt = new Timestamp(System.currentTimeMillis());

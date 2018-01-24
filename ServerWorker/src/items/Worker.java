@@ -1,15 +1,18 @@
-package worker.communication.scheduler;
-
-
+package items;
 
 import java.io.Serializable;
 
 public class Worker implements Serializable {
 
     private static final long serialVersionUID = 5873709861586747341L;
+
     private int id = -1;
+
     private int taskCount = 0;
+
+
     private int port = -1;
+
     private String host;
 
     public Worker(int id, int taskCount, int port, String host) {

@@ -1,6 +1,8 @@
 package worker.server.config;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.Optional;
 
 public class WorkerServerConfiguration {
@@ -17,13 +19,13 @@ public class WorkerServerConfiguration {
     }
 
     public WorkerServerConfiguration(String name, InetAddress inetAddress, Integer port, Integer
-            serverThreadPoolSize, WorkerConfiguration workerConfigurations, InetAddress schedulerAddress,Integer schedulerPort) {
+            serverThreadPoolSize, WorkerConfiguration workerConfigurations, InetAddress schedulerAddress, Integer schedulerPort) {
         this.name = Optional.ofNullable(name);
         this.inetAddress = Optional.ofNullable(inetAddress);
         this.port = Optional.ofNullable(port);
         this.serverThreadPoolSize = Optional.ofNullable(serverThreadPoolSize);
         this.workerConfiguration = Optional.ofNullable(workerConfigurations);
-        this.schedulerAddress= Optional.ofNullable(schedulerAddress);
+        this.schedulerAddress = Optional.ofNullable(schedulerAddress);
         this.schedulerPort = Optional.ofNullable(schedulerPort);
     }
 
@@ -37,6 +39,17 @@ public class WorkerServerConfiguration {
 
     public Optional<Integer> getPort() {
         return port;
+    }
+
+    public void setRandomPort() {
+        try {
+            ServerSocket socket = new ServerSocket(0);
+            System.out.println("Setting random port: " + socket.getLocalPort());
+            setPort(socket.getLocalPort());
+        } catch (IOException e) {
+            e.printStackTrace();
+            setPort(0);
+        }
     }
 
     public void setPort(Integer port) {
@@ -72,6 +85,7 @@ public class WorkerServerConfiguration {
     }
 
     public void setSchedulerAddress(InetAddress schedulerAddress) {
+        System.out.println("Setting scheduler address: " + schedulerAddress.getCanonicalHostName());
         this.schedulerAddress = Optional.ofNullable(schedulerAddress);
     }
 

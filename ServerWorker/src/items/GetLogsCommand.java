@@ -1,4 +1,4 @@
-package worker.communication.scheduler;
+package items;
 
 public class GetLogsCommand {
     private int offset;

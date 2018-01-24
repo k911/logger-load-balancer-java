@@ -1,20 +1,25 @@
 package worker.server.worker;
 
-import worker.communication.*;
+import items.GetLogsCommand;
+import items.Log;
+import worker.communication.EndCommunicationMessage;
+import worker.communication.JobRequest;
+import worker.communication.RejectionMessage;
+import worker.communication.SocketMessage;
 import worker.communication.job.Job;
-import worker.communication.scheduler.GetLogsCommand;
-import worker.communication.scheduler.Log;
 import worker.communication.scheduler.SocketConnectionFactory;
 import worker.server.ThreadSafeSet;
 import worker.server.config.WorkerConfiguration;
-import worker.statistics.*;
+import worker.statistics.Max;
+import worker.statistics.MeanArithmetic;
+import worker.statistics.Median;
+import worker.statistics.Min;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,17 +50,17 @@ public class RunnableWorker implements Runnable {
 
     public RunnableWorker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers) {
         this.client = client;
-        this.connectedUsers=connectedUsers;
+        this.connectedUsers = connectedUsers;
         this.configure(workerConfiguration);
         executors = Executors.newFixedThreadPool(this.threadPoolSize);
     }
 
     private void configure(WorkerConfiguration workerConfiguration) {
 
-        this.workerName = workerConfiguration.getName().orElse("RunnableWorker") +"" + Thread.currentThread().getName();
-        this.threadPoolSize=workerConfiguration.getThreadPoolSize().orElse(4);
-        this.shutdownTimeOut=workerConfiguration.getExecutorShutdownTimeout().orElse(10);
-        this.timeUnit=workerConfiguration.getTimeoutUnit().orElse(TimeUnit.SECONDS);
+        this.workerName = workerConfiguration.getName().orElse("RunnableWorker") + "" + Thread.currentThread().getName();
+        this.threadPoolSize = workerConfiguration.getThreadPoolSize().orElse(4);
+        this.shutdownTimeOut = workerConfiguration.getExecutorShutdownTimeout().orElse(10);
+        this.timeUnit = workerConfiguration.getTimeoutUnit().orElse(TimeUnit.SECONDS);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class RunnableWorker implements Runnable {
                     sendRejectionMessage("Unrecognized message received!");
                 } else {
                     String author = ((SocketMessage) receivedMessage).getAuthor();
-                    logger.info("Parsing message:" + receivedMessage.getClass() +" from "+author);
+                    logger.info("Parsing message:" + receivedMessage.getClass() + " from " + author);
                     if (!author.equalsIgnoreCase(clientName)) {
                         EndCommunicationMessage endMessage = new EndCommunicationMessage(workerName,
                                 "Identity changed!");
@@ -89,15 +94,15 @@ public class RunnableWorker implements Runnable {
                     }
 
                     if (receivedMessage instanceof JobRequest) {
-                        JobRequest message=(JobRequest) receivedMessage;
+                        JobRequest message = (JobRequest) receivedMessage;
 
-                        if(validateJobs(message.getJobs())) {
+                        if (validateJobs(message.getJobs())) {
                             Map<Long, Job> jobs = message.getJobs();
                             Long results = null;
                             Future<Boolean> future = null;
                             SocketConnectionFactory socketConnectionFactory = new SocketConnectionFactory("SOCKET_SERVER_HOST", "SOCKET_SERVER_PORT");
                             Job job;
-                            ArrayList<Long> logs = null;
+                            ArrayList<Log> logs = null;
                             try {
                                 Socket socket = socketConnectionFactory.make();
                                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -111,7 +116,7 @@ public class RunnableWorker implements Runnable {
                                     throw new RuntimeException(in.readUTF());
                                 }
 
-                                logs = (ArrayList<Long>) in.readObject();
+                                logs = (ArrayList<Log>) in.readObject();
 
 
                             } catch (IOException e) {
@@ -121,7 +126,7 @@ public class RunnableWorker implements Runnable {
                             }
 
                             for (Map.Entry<Long, Job> entry : jobs.entrySet()) {
-                                job= entry.getValue();
+                                job = entry.getValue();
 
                                 switch (job.getJobType()) {
 
@@ -130,25 +135,25 @@ public class RunnableWorker implements Runnable {
                                         break;
 
                                     case FIND_MIN:
-                                        Min min= new Min();// funkcja dla enum2;
-                                        results=min.CalculateMin(logs);
+                                        Min min = new Min();// funkcja dla enum2;
+//                                        results = min.CalculateMin(logs);
                                         break;
 
                                     case FIND_MAX:
-                                        Max max=new Max();
-                                        results=max.CalculateMax(logs);
+                                        Max max = new Max();
+//                                        results = max.CalculateMax(logs);
                                         break;
                                     case CALC_ARITHMETIC_MEAN:
-                                        MeanArithmetic mear=new MeanArithmetic();
-                                        results=mear.CalculateArithmeticMean(logs);
+                                        MeanArithmetic mear = new MeanArithmetic();
+//                                        results = mear.CalculateArithmeticMean(logs);
                                         break;
                                     case CALC_GEOMETRIC_MEAN:
-                                       // MeanGeometric mege=new MeanGeometric();
+                                        // MeanGeometric mege=new MeanGeometric();
                                         //results=mege.CalculateGeometricMean(logs);
                                         break;
                                     case CALC_MEDIAN:
-                                        Median med=new Median();
-                                        results=med.CalculateMedian(logs);
+                                        Median med = new Median();
+//                                        results = med.CalculateMedian(logs);
                                         break;
 
                                     case CALC_NUMBER_OCCURENCES:
@@ -172,10 +177,8 @@ public class RunnableWorker implements Runnable {
                                 }
                                 output.writeObject(results);
                             }
-                        }
-                        else
+                        } else
                             sendRejectionMessage("Received jobs were not prepared properly");
-
 
 
                     } else if (receivedMessage instanceof EndCommunicationMessage) {
@@ -198,11 +201,10 @@ public class RunnableWorker implements Runnable {
     }
 
     private boolean validateJobs(Map<Long, Job> jobs) {
-        boolean isValid=true;
+        boolean isValid = true;
         for (Job job : jobs.values()) {
-            if (job.getArgument()==null || job.getArgument().isEmpty() || job.getJobType()==null)
-            {
-                isValid=false;
+            if (job.getArgument() == null || job.getArgument().isEmpty() || job.getJobType() == null) {
+                isValid = false;
                 break;
             }
         }
@@ -227,7 +229,7 @@ public class RunnableWorker implements Runnable {
     private boolean isValidMessage(Object message) {
         return message instanceof SocketMessage;
     }
-    
+
     private void sendRejectionMessage(String message) throws IOException {
         output.writeObject(new RejectionMessage(workerName, null, message));
     }
