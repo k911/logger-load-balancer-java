@@ -2,16 +2,23 @@ package worker.server.worker;
 
 import worker.communication.*;
 import worker.communication.job.Job;
+import worker.communication.scheduler.GetLogsCommand;
+import worker.communication.scheduler.Log;
+import worker.communication.scheduler.SocketConnectionFactory;
 import worker.server.ThreadSafeSet;
 import worker.server.config.WorkerConfiguration;
+import worker.statistics.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -64,7 +71,6 @@ public class RunnableWorker implements Runnable {
         }
 
 
-
         try {
             System.out.println("Waiting for first message");
             Object firstMessage = input.readObject();
@@ -93,16 +99,90 @@ public class RunnableWorker implements Runnable {
                     }
 
                     if (receivedMessage instanceof JobRequest) {
-                        //#TODO implement logic here - perform all jobs, and send response then close all connections?
                         JobRequest message=(JobRequest) receivedMessage;
 
-                        if(validateJobs(message.getJobs())){
+                        if(validateJobs(message.getJobs())) {
+                            Map<Long, Job> jobs = message.getJobs();
+                            Long results;
+                            Future<Boolean> future = null;
+                            SocketConnectionFactory socketConnectionFactory = new SocketConnectionFactory("SOCKET_SERVER_HOST", "SOCKET_SERVER_PORT");
+                            Job job;
+                            ArrayList<Long> logs = null;
+                            try {
+                                Socket socket = socketConnectionFactory.make();
+                                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                                GetLogsCommand getLogsCommand = (GetLogsCommand) in.readObject();
+                                // Read logs
+                                out.writeUTF("get_logs");
+                                out.writeObject(getLogsCommand);
+                                out.flush();
+                                if (in.readUTF().equals("FAILURE")) {
+                                    throw new RuntimeException(in.readUTF());
+                                }
+
+                                logs = (ArrayList<Long>) in.readObject();
 
 
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
 
+                            for (Map.Entry<Long, Job> entry : jobs.entrySet()) {
+                                job= entry.getValue();
 
+                                switch (job.getJobType()) {
 
-                        }else
+                                    case CALC_PHRASE_OCCURENCES:
+                                        //funkcja dla enum1;
+                                        break;
+
+                                    case FIND_MIN:
+                                        Min min= new Min();// funkcja dla enum2;
+                                        results=min.CalculateMin(logs);
+                                        break;
+
+                                    case FIND_MAX:
+                                        Max max=new Max();
+                                        results=max.CalculateMax(logs);
+                                        break;
+                                    case CALC_ARITHMETIC_MEAN:
+                                        MeanArithmetic mear=new MeanArithmetic();
+                                        results=mear.CalculateArithmeticMean(logs);
+                                        break;
+                                    case CALC_GEOMETRIC_MEAN:
+                                       // MeanGeometric mege=new MeanGeometric();
+                                        //results=mege.CalculateGeometricMean(logs);
+                                        break;
+                                    case CALC_MEDIAN:
+                                        Median med=new Median();
+                                        results=med.CalculateMedian(logs);
+                                        break;
+
+                                    case CALC_NUMBER_OCCURENCES:
+                                        //Occurences occ= new Occurences();
+                                        //results=occ.CalculateOccurences(logs, ) //searched element
+                                        break;
+
+                                    case CALC_VARIANCE:
+                                        //Variance var=new Variance();
+                                        //results=var.CalculateVariance(logs);
+                                        break;
+
+                                    case CALC_STANDARD_DEVIATION:
+                                        //StandardDeviation stde=new StandardDeviation();
+                                        //results=stde.CalculateStandardDeviation(logs);
+                                        break;
+
+                                    default:
+                                        System.out.println("Incorrect option");
+                                        break;
+                                }
+                            }
+                        }
+                        else
                             sendRejectionMessage("Received jobs were not prepared properly");
 
 
