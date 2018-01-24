@@ -19,10 +19,8 @@ import javafx.scene.control.Label;
 public class SendLogsController {
 	private static Gson gson = AppUtils.buildGson();
 	private static RandomLogGenerator logGenerator = new RandomLogGenerator(gson);
-	private static Date date = new Date();
-	private static int currentLogNumber = 0;
-    private static SendLogsController sendsLogsController;
-    
+	private static SendLogsController sendsLogsController;
+
 	@FXML
 	Button sendLogsButton;
 	@FXML
@@ -46,12 +44,17 @@ public class SendLogsController {
 
 	@FXML
 	public void sendLogs() {
-		setLogsStatusLabel("working", "Przesyłam logi...");
-	
-	    String logJsonString = logsTextArea.getText();
-	    JsonObject logJsonObject = gson.fromJson(logJsonString, JsonObject.class);
-		Main.getSchedulerConnection().sendLogs(logJsonObject.get("message").getAsString(),
-				logJsonObject.get("context").toString());
+		String logJsonString = logsTextArea.getText();
+		
+		if (logJsonString.isEmpty()) {
+			setLogsStatusLabel("error", "Nie ma wprowadzonego tekstu!!!");
+		} else {
+			setLogsStatusLabel("working", "Przesyłam logi...");
+
+			JsonObject logJsonObject = gson.fromJson(logJsonString, JsonObject.class);
+			Main.getSchedulerConnection().sendLogs(logJsonObject.get("message").getAsString(),
+					logJsonObject.get("context").toString());
+		}
 	}
 
 	@FXML
@@ -71,7 +74,7 @@ public class SendLogsController {
 		Object prettiefiedJsonObject = gson.fromJson(generateOutputJsonString(randomLog), Object.class);
 		logsTextArea.setText(gson.toJson(prettiefiedJsonObject));
 	}
-	
+
 	public static SendLogsController getController() {
 		return sendsLogsController;
 	}
@@ -83,7 +86,7 @@ public class SendLogsController {
 	}
 
 	private void changeLogsStatusLabelTextColor(String type) {
-		if (type == "ERROR") {
+		if (type.equals("ERROR")) {
 			logsStatusLabel.setTextFill(Color.RED);
 		} else if (type.equals("WARNING")) {
 			logsStatusLabel.setTextFill(Color.YELLOW);
@@ -93,12 +96,8 @@ public class SendLogsController {
 			logsStatusLabel.setTextFill(Color.BLUE);
 		}
 	}
-	
-	private String generateOutputJsonString (Log log) {
-		return "{ \"message\": " + "\"" + log.getMessage()  + "\"" +  ",\"context\": " + log.getContext() + " }";
-	}
 
-	private int incrementLogNumber() {
-		return ++currentLogNumber;
+	private String generateOutputJsonString(Log log) {
+		return "{ \"message\": " + "\"" + log.getMessage() + "\"" + ",\"context\": " + log.getContext() + " }";
 	}
 }
