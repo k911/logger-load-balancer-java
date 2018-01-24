@@ -94,9 +94,11 @@ public class RunnableWorker implements Runnable {
                     }
 
                     if (receivedMessage instanceof JobRequest) {
-                        JobRequest message = (JobRequest) receivedMessage;
-
-                        if (validateJobs(message.getJobs())) {
+                        JobRequest message=(JobRequest) receivedMessage;
+                        // @TODO ponizej powinien odbywac sie odczyt logów ze schedulera, a następnie
+                        // @TODO przypisanie do odpowiedniej metody liczącej - te wykomentowane na razie olać, bo typy sie kłócą
+                        // @TODO wzzytskie obliczeniówki poza StringSearch przyjmuja na werjscie ArrayListe Long lub double
+                        if(validateJobs(message.getJobs())) {
                             Map<Long, Job> jobs = message.getJobs();
                             Long results = null;
                             Future<Boolean> future = null;
@@ -179,6 +181,7 @@ public class RunnableWorker implements Runnable {
                             }
                         } else
                             sendRejectionMessage("Received jobs were not prepared properly");
+
 
 
                     } else if (receivedMessage instanceof EndCommunicationMessage) {
