@@ -9,9 +9,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +21,7 @@ public class WorkerServer implements Runnable {
     private final static Logger logger = Logger.getLogger(WorkerServer.class.getName());
     ExecutorService executors;
 
-    private List<WorkerConfiguration> workerConfigurations = new ArrayList<>
-            (Arrays.asList(new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3)));
+    private WorkerConfiguration workerConfiguration = new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3);
     private String name = "Worker-Server";
     private int workerPoolSize = 30;
     private InetAddress inetAddress;
@@ -52,8 +48,8 @@ public class WorkerServer implements Runnable {
         if (configuration.getName().isPresent())
             this.name = configuration.getName().get();
 
-        if (configuration.getWorkerConfigurations().isPresent())
-            workerConfigurations = configuration.getWorkerConfigurations().get();
+        if (configuration.getWorkerConfiguration().isPresent())
+            workerConfiguration = configuration.getWorkerConfiguration().get();
 
         if (configuration.getServerThreadPoolSize().isPresent())
             workerPoolSize = configuration.getServerThreadPoolSize().get();
@@ -107,7 +103,7 @@ public class WorkerServer implements Runnable {
             logger.info("WorkerServer " + this.name + " is waiting for client");
             try {
                 Socket client = serverSocket.accept();
-                executors.submit(new Worker(client));
+                executors.submit(new Worker(client,workerConfiguration,connectedUsers));
             } catch (IOException e) {
                 logger.warning("Exception caught when handling socket " + e.getMessage());
                 return;

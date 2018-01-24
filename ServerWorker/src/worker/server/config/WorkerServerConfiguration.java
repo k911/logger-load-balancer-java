@@ -10,18 +10,18 @@ public class WorkerServerConfiguration {
     private Optional<InetAddress> inetAddress;
     private Optional<Integer> port;
     private Optional<Integer> serverThreadPoolSize;
-    private Optional<List<WorkerConfiguration>> workerConfigurations;
+    private Optional<WorkerConfiguration> workerConfiguration;
 
     public WorkerServerConfiguration() {
     }
 
     public WorkerServerConfiguration(String name, InetAddress inetAddress, Integer port, Integer
-            serverThreadPoolSize, List<WorkerConfiguration> workerConfigurations) {
+            serverThreadPoolSize, WorkerConfiguration workerConfigurations) {
         this.name = Optional.ofNullable(name);
         this.inetAddress = Optional.ofNullable(inetAddress);
         this.port = Optional.ofNullable(port);
         this.serverThreadPoolSize = Optional.ofNullable(serverThreadPoolSize);
-        this.workerConfigurations = Optional.ofNullable(workerConfigurations);
+        this.workerConfiguration = Optional.ofNullable(workerConfigurations);
     }
 
     public Optional<String> getName() {
@@ -40,12 +40,12 @@ public class WorkerServerConfiguration {
         this.port = Optional.ofNullable(port);
     }
 
-    public Optional<List<WorkerConfiguration>> getWorkerConfigurations() {
-        return workerConfigurations;
+    public Optional<WorkerConfiguration> getWorkerConfiguration() {
+        return workerConfiguration;
     }
 
-    public void setWorkerConfigurations(List<WorkerConfiguration> workerConfigurations) {
-        this.workerConfigurations = Optional.ofNullable(workerConfigurations);
+    public void setWorkerConfigurations(WorkerConfiguration workerConfiguration) {
+        this.workerConfiguration = Optional.ofNullable(workerConfiguration);
     }
 
     public Optional<InetAddress> getInetAddress() {
