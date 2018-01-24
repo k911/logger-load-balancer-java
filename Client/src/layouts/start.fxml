@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="start" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StartController">
+   <children>
+      <Pane layoutX="3.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+         <children>
+            <Button fx:id="sendLogsButton" layoutX="58.0" layoutY="14.0" mnemonicParsing="false" onAction="#setSendLogsScene" text="Wyślij logi" />
+            <Button fx:id="launchTaskButton" layoutX="36.0" layoutY="61.0" mnemonicParsing="false" onAction="#setLaunchTaskScene" text="Wykonaj zadanie" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
