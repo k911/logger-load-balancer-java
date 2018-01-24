@@ -51,14 +51,14 @@ public class SchedulerConnection {
 		}
 	}
 
-	public void sendLogs(String message, String payload) {
+	public void sendLogs(String message, String context) {
 		try {
 			Socket socket = socketConnectionFactory.make();
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			
 			// Create a new log
-			Log log = new Log(message, payload);
+			Log log = new Log(message, context);
 
 			// Send log back to loadBalancer
 			out.writeUTF("add_log");

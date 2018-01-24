@@ -3,6 +3,8 @@ package controller;
 import java.util.Date;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import utils.AppUtils;
 import utils.RandomLogGenerator;
 import application.Main;
@@ -45,9 +47,11 @@ public class SendLogsController {
 	@FXML
 	public void sendLogs() {
 		setLogsStatusLabel("working", "Przesyłam logi...");
-
-		Main.getSchedulerConnection().sendLogs("Log: " + date.toString() + " " + incrementLogNumber(),
-				logsTextArea.getText());
+	
+	    String logJsonString = logsTextArea.getText();
+	    JsonObject logJsonObject = gson.fromJson(logJsonString, JsonObject.class);
+		Main.getSchedulerConnection().sendLogs(logJsonObject.get("message").getAsString(),
+				logJsonObject.get("context").toString());
 	}
 
 	@FXML
@@ -64,7 +68,8 @@ public class SendLogsController {
 	public void generateRandomLog() {
 		setLogsStatusLabel("success", "Wygenerowałem poprawnie losowy log!");
 		Log randomLog = logGenerator.generate();
-		logsTextArea.setText(gson.toJson(randomLog));
+		Object prettiefiedJsonObject = gson.fromJson(generateOutputJsonString(randomLog), Object.class);
+		logsTextArea.setText(gson.toJson(prettiefiedJsonObject));
 	}
 	
 	public static SendLogsController getController() {
@@ -87,6 +92,10 @@ public class SendLogsController {
 		} else if (type.equals("WORKING")) {
 			logsStatusLabel.setTextFill(Color.BLUE);
 		}
+	}
+	
+	private String generateOutputJsonString (Log log) {
+		return "{ \"message\": " + "\"" + log.getMessage()  + "\"" +  ",\"context\": " + log.getContext() + " }";
 	}
 
 	private int incrementLogNumber() {
