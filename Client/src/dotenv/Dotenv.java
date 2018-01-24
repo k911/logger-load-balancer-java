@@ -37,7 +37,7 @@ public final class Dotenv {
     public void load() {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream("../" + envFile);
+            InputStream inputStream = new FileInputStream(envFile);
             prop.load(inputStream);
             Map<String, String> map = new LinkedHashMap<>(System.getenv());
             String key;
