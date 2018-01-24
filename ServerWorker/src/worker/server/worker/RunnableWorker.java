@@ -72,16 +72,6 @@ public class RunnableWorker implements Runnable {
 
 
         try {
-            System.out.println("Waiting for first message");
-            Object firstMessage = input.readObject();
-            if (isLoginMessage(firstMessage)) {
-                clientName = ((SocketMessage) firstMessage).getAuthor();
-                output.writeObject(new OkResponseMessage(workerName));
-                logger.info("Client logged on:" + clientName);
-            } else {
-                output.writeObject(new EndCommunicationMessage(workerName, "End of communication"));
-                performClose();
-            }
             while (!client.isClosed()) {
                 System.out.println("Waiting for message");
                 Object receivedMessage = input.readObject();
@@ -103,7 +93,7 @@ public class RunnableWorker implements Runnable {
 
                         if(validateJobs(message.getJobs())) {
                             Map<Long, Job> jobs = message.getJobs();
-                            Long results;
+                            Long results = null;
                             Future<Boolean> future = null;
                             SocketConnectionFactory socketConnectionFactory = new SocketConnectionFactory("SOCKET_SERVER_HOST", "SOCKET_SERVER_PORT");
                             Job job;
@@ -180,6 +170,7 @@ public class RunnableWorker implements Runnable {
                                         System.out.println("Incorrect option");
                                         break;
                                 }
+                                output.writeObject(results);
                             }
                         }
                         else
@@ -192,10 +183,7 @@ public class RunnableWorker implements Runnable {
                     } else {
                         sendRejectionMessage("Unhandled message type received");
                     }
-
-
                 }
-
             }
 
         } catch (IOException e) {
@@ -238,13 +226,8 @@ public class RunnableWorker implements Runnable {
 
     private boolean isValidMessage(Object message) {
         return message instanceof SocketMessage;
-
     }
-
-    private boolean isLoginMessage(Object message) {
-        return (isValidMessage(message) && message instanceof LoginMessage);
-    }
-
+    
     private void sendRejectionMessage(String message) throws IOException {
         output.writeObject(new RejectionMessage(workerName, null, message));
     }
