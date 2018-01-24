@@ -113,6 +113,7 @@ public class WorkerServer implements Runnable {
 
 	private boolean registerWorker() {
 		try {
+			//@TODO poprawa ponizszego kodu- rejestracja sie wywala
 			logger.info("Registering Worker Server: " + this.name + " with Scheduler on "
 					+ this.schedulerAddress.getHostAddress());
 			Socket scheduler = new Socket(schedulerAddress.getHostAddress(), schedulerPort);

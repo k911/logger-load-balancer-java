@@ -90,7 +90,9 @@ public class RunnableWorker implements Runnable {
 
                     if (receivedMessage instanceof JobRequest) {
                         JobRequest message=(JobRequest) receivedMessage;
-
+                        // @TODO ponizej powinien odbywac sie odczyt logów ze schedulera, a następnie
+                        // @TODO przypisanie do odpowiedniej metody liczącej - te wykomentowane na razie olać, bo typy sie kłócą
+                        // @TODO wzzytskie obliczeniówki poza StringSearch przyjmuja na werjscie ArrayListe Long lub double
                         if(validateJobs(message.getJobs())) {
                             Map<Long, Job> jobs = message.getJobs();
                             Long results = null;
@@ -227,10 +229,9 @@ public class RunnableWorker implements Runnable {
     private boolean isValidMessage(Object message) {
         return message instanceof SocketMessage;
     }
-    
+
     private void sendRejectionMessage(String message) throws IOException {
         output.writeObject(new RejectionMessage(workerName, null, message));
     }
-
 
 }
