@@ -1,6 +1,5 @@
 package worker.server;
 
-import worker.server.config.DBConnectionConfiguration;
 import worker.server.config.WorkerConfiguration;
 import worker.server.config.WorkerServerConfiguration;
 import worker.server.worker.Worker;
@@ -24,7 +23,7 @@ public class WorkerServer implements Runnable {
 
     private final static Logger logger = Logger.getLogger(WorkerServer.class.getName());
     ExecutorService executors;
-    String dbSchemaName;
+
     private List<WorkerConfiguration> workerConfigurations = new ArrayList<>
             (Arrays.asList(new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3)));
     private String name = "Worker-Server";
