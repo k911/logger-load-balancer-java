@@ -47,7 +47,7 @@ public class Main {
         serverConfiguration.setSchedulerPort(80);
 
 
-        WorkerConfiguration workerConfiguration = new WorkerConfigurationBuilder().name("Worker-Calc")
+        WorkerConfiguration workerConfiguration = new WorkerConfigurationBuilder().name("RunnableWorker-Calc")
                 .threadPoolSize(5).buildWorkerConfiguration();
 
         serverConfiguration.setWorkerConfigurations(workerConfiguration);

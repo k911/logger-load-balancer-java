@@ -9,16 +9,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Connection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class Worker implements Runnable {
+public class RunnableWorker implements Runnable {
 
-    private final static Logger logger = Logger.getLogger(Worker.class.getName());
+    private final static Logger logger = Logger.getLogger(RunnableWorker.class.getName());
 
     private Socket client;
     private String clientName;
@@ -33,11 +32,11 @@ public class Worker implements Runnable {
     int shutdownTimeOut;
 
 
-    public Worker(Socket client) {
+    public RunnableWorker(Socket client) {
 
     }
 
-    public Worker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers) {
+    public RunnableWorker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers) {
         this.client = client;
         this.connectedUsers=connectedUsers;
         this.configure(workerConfiguration);
@@ -46,7 +45,7 @@ public class Worker implements Runnable {
 
     private void configure(WorkerConfiguration workerConfiguration) {
 
-        this.workerName = workerConfiguration.getName().orElse("Worker") +"" + Thread.currentThread().getName();
+        this.workerName = workerConfiguration.getName().orElse("RunnableWorker") +"" + Thread.currentThread().getName();
         this.threadPoolSize=workerConfiguration.getThreadPoolSize().orElse(4);
         this.shutdownTimeOut=workerConfiguration.getExecutorShutdownTimeout().orElse(10);
         this.timeUnit=workerConfiguration.getTimeoutUnit().orElse(TimeUnit.SECONDS);
@@ -54,7 +53,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Worker: " + Thread.currentThread().getName() + " is started");
+        logger.info("RunnableWorker: " + Thread.currentThread().getName() + " is started");
         try {
             output = new ObjectOutputStream(client.getOutputStream());
             input = new ObjectInputStream(client.getInputStream());
@@ -63,6 +62,9 @@ public class Worker implements Runnable {
             performClose();
             return;
         }
+
+
+
         try {
             System.out.println("Waiting for first message");
             Object firstMessage = input.readObject();

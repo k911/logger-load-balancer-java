@@ -1,10 +1,13 @@
 package worker.server;
 
+import worker.communication.scheduler.Worker;
 import worker.server.config.WorkerConfiguration;
 import worker.server.config.WorkerServerConfiguration;
-import worker.server.worker.Worker;
+import worker.server.worker.RunnableWorker;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -48,11 +51,11 @@ public class WorkerServer implements Runnable {
     private void configure(WorkerServerConfiguration configuration) {
 
 
-            this.name = configuration.getName().orElse("Worker-Server");
+            this.name = configuration.getName().orElse("RunnableWorker-Server");
 
 
             workerConfiguration = configuration.getWorkerConfiguration()
-                    .orElse(new WorkerConfiguration("Worker", TimeUnit.SECONDS, 10, 3));
+                    .orElse(new WorkerConfiguration("RunnableWorker", TimeUnit.SECONDS, 10, 3));
 
 
             workerPoolSize = configuration.getServerThreadPoolSize().orElse(30);
@@ -101,9 +104,27 @@ public class WorkerServer implements Runnable {
 
 
     private boolean registerWorker(){
+        try{
+            Socket scheduler=new Socket(schedulerAddress.getHostAddress(),schedulerPort);
 
+            ObjectOutputStream output = new ObjectOutputStream(scheduler.getOutputStream());
+            ObjectInputStream input = new ObjectInputStream(scheduler.getInputStream());
+            logger.info("Registerting Worker Server: "+this.name+" with Scheduler on "+this.schedulerAddress.getHostAddress());
+            Worker worker = new Worker(this.port, this.inetAddress.getHostAddress());
+            output.writeUTF("add_worker");
+            output.writeObject(worker);
+            String response=input.readUTF();
+            logger.info("Registration result:"+response);
+            return response.equals("SUCCESS");
 
-        return false;
+        } catch (UnknownHostException e) {
+            logger.warning(e.getMessage());
+            return false;
+        } catch (IOException e) {
+            logger.warning(e.getMessage());
+            return false;
+        }
+
 
     }
 
@@ -126,7 +147,7 @@ public class WorkerServer implements Runnable {
             logger.info("WorkerServer " + this.name + " is waiting for client");
             try {
                 Socket client = serverSocket.accept();
-                executors.submit(new Worker(client, workerConfiguration, connectedUsers));
+                executors.submit(new RunnableWorker(client, workerConfiguration, connectedUsers));
             } catch (IOException e) {
                 logger.warning("Exception caught when handling socket " + e.getMessage());
                 return;
