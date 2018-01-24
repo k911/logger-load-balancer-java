@@ -92,6 +92,12 @@ public class WorkerServer implements Runnable {
     public void run() {
         logger.info("Server " + this.name + " thread is started: " + Thread.currentThread().getName());
 
+        if(!registerWorker())
+        {
+            logger.warning("Worker Server registration failed! Server will shut down");
+            return;
+        }
+
         logger.info("Request Handler is starting");
         handleRequests();
 

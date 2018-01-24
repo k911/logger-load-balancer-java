@@ -29,15 +29,26 @@ public class Main {
 
         WorkerServerConfiguration serverConfiguration = new WorkerServerConfiguration();
         serverConfiguration.setName("WorkerServer-1");
+
+        /*--------------------------------------------------------------------------------------------------------------
+        worker server address and port
+         */
+
         try {
             serverConfiguration.setInetAddress(InetAddress.getLocalHost());
         } catch (UnknownHostException e) {
             logger.severe("Configuration setup failed. Could not resolve InetAddress "
                     + e.getMessage());
         }
-        serverConfiguration.setPort(8082);
-        serverConfiguration.setServerThreadPoolSize(30);
 
+        serverConfiguration.setPort(8082);
+        /*--------------------------------------------------------------------------------------------------------------
+        number of  maximum runnable workers
+         */
+        serverConfiguration.setServerThreadPoolSize(30);
+        /*--------------------------------------------------------------------------------------------------------------
+        scheduler address and port:
+         */
         try {
             serverConfiguration.setSchedulerAddress(InetAddress.getLocalHost());
         } catch (UnknownHostException e) {
@@ -46,9 +57,12 @@ public class Main {
         }
         serverConfiguration.setSchedulerPort(80);
 
-
+        /*--------------------------------------------------------------------------------------------------------------
+        RunnableWorker configuration - same for every worker
+         */
         WorkerConfiguration workerConfiguration = new WorkerConfigurationBuilder().name("RunnableWorker-Calc")
                 .threadPoolSize(5).buildWorkerConfiguration();
+
 
         serverConfiguration.setWorkerConfigurations(workerConfiguration);
 
