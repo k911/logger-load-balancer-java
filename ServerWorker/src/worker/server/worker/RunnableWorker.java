@@ -2,6 +2,7 @@ package worker.server.worker;
 
 import items.GetLogsCommand;
 import items.Log;
+import items.Worker;
 import worker.communication.EndCommunicationMessage;
 import worker.communication.JobRequest;
 import worker.communication.RejectionMessage;
@@ -37,6 +38,7 @@ public class RunnableWorker implements Runnable {
     private ObjectOutputStream output;
     private boolean shouldRead = true;
     private ThreadSafeSet<String> connectedUsers;
+    private Worker worker;
     ExecutorService executors;
     private String workerName;
     int threadPoolSize;
@@ -48,9 +50,10 @@ public class RunnableWorker implements Runnable {
 
     }
 
-    public RunnableWorker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers) {
+    public RunnableWorker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers, Worker worker) {
         this.client = client;
         this.connectedUsers = connectedUsers;
+        this.worker = worker;
         this.configure(workerConfiguration);
         executors = Executors.newFixedThreadPool(this.threadPoolSize);
     }
@@ -106,9 +109,19 @@ public class RunnableWorker implements Runnable {
                             Job job;
                             ArrayList<Log> logs = null;
                             try {
-                                Socket socket = socketConnectionFactory.make();
-                                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                                Socket scheduler = socketConnectionFactory.make();
+                                ObjectInputStream in = new ObjectInputStream(scheduler.getInputStream());
+                                ObjectOutputStream out = new ObjectOutputStream(scheduler.getOutputStream());
+
+                                // Mark that this worker is handling one more task
+                                out.writeUTF("update_worker");
+                                worker.addTask();
+                                out.writeObject(worker);
+                                if(!input.readUTF().equals("SUCCESS")) {
+                                    logger.warning("Error: " + in.readUTF());
+                                }
+                                worker = (Worker) in.readObject();
+
                                 GetLogsCommand getLogsCommand = (GetLogsCommand) in.readObject();
                                 // Read logs
                                 out.writeUTF("get_logs");

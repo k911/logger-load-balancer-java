@@ -160,20 +160,8 @@ public class WorkerServer implements Runnable {
             logger.info("WorkerServer " + this.name + " is waiting for client");
             try {
                 Socket client = serverSocket.accept();
-
-                // mark that worker is busy
-                ObjectOutputStream output = new ObjectOutputStream(scheduler.getOutputStream());
-                ObjectInputStream input = new ObjectInputStream(scheduler.getInputStream());
-                output.writeUTF("update_worker");
-                worker.addTask();
-                output.writeObject(worker);
-                if(!input.readUTF().equals("SUCCESS")) {
-                    logger.warning("Error: " + input.readUTF());
-                }
-                worker = (Worker) input.readObject();
-
-                executors.submit(new RunnableWorker(client, workerConfiguration, connectedUsers));
-            } catch (IOException | ClassNotFoundException e) {
+                executors.submit(new RunnableWorker(client, workerConfiguration, connectedUsers, worker));
+            } catch (IOException e) {
                 logger.warning("Exception caught when handling socket " + e.getMessage());
                 return;
             }
