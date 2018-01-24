@@ -1,6 +1,7 @@
 package worker.server.worker;
 
 import worker.communication.*;
+import worker.communication.job.Job;
 import worker.server.ThreadSafeSet;
 import worker.server.config.WorkerConfiguration;
 
@@ -9,6 +10,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -21,7 +25,8 @@ public class Worker implements Runnable {
     private ObjectInputStream input;
     private ObjectOutputStream output;
     private boolean shouldRead = true;
-
+    private ThreadSafeSet<String> connectedUsers;
+    ExecutorService executors;
     private String workerName;
     int threadPoolSize;
     TimeUnit timeUnit;
@@ -34,8 +39,9 @@ public class Worker implements Runnable {
 
     public Worker(Socket client, WorkerConfiguration workerConfiguration, ThreadSafeSet<String> connectedUsers) {
         this.client = client;
+        this.connectedUsers=connectedUsers;
         this.configure(workerConfiguration);
-
+        executors = Executors.newFixedThreadPool(this.threadPoolSize);
     }
 
     private void configure(WorkerConfiguration workerConfiguration) {
@@ -86,6 +92,16 @@ public class Worker implements Runnable {
 
                     if (receivedMessage instanceof JobRequest) {
                         //#TODO implement logic here - perform all jobs, and send response then close all connections?
+                        JobRequest message=(JobRequest) receivedMessage;
+
+                        if(validateJobs(message.getJobs())){
+
+
+
+
+
+                        }else
+                            sendRejectionMessage("Received jobs were not prepared properly");
 
 
 
@@ -109,6 +125,18 @@ public class Worker implements Runnable {
             performClose();
             return;
         }
+    }
+
+    private boolean validateJobs(Map<Long, Job> jobs) {
+        boolean isValid=true;
+        for (Job job : jobs.values()) {
+            if (job.getArgument()==null || job.getArgument().isEmpty() || job.getJobType()==null)
+            {
+                isValid=false;
+                break;
+            }
+        }
+        return isValid;
     }
 
 
