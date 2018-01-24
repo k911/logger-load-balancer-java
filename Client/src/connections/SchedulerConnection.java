@@ -30,25 +30,35 @@ public class SchedulerConnection {
 		socketConnectionFactory = new SocketConnectionFactory("SOCKET_SERVER_HOST", "SOCKET_SERVER_PORT");
 	}
 
-	public void getWorker() {
+	public Worker getWorker() {
 		try {
 			Socket socket = socketConnectionFactory.make();
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
+			// Send a request for worker data
 			out.writeUTF("get_worker");
 			out.flush();
+			
+			// Check if request did not failed
 			checkForFailure(in);
+		
+			// Read the worker
 			Worker worker = (Worker) in.readObject();
-
+			
+			// Close connection
 			out.writeUTF("exit");
 			out.flush();
 			out.close();
 			socket.close();
+			
+			return worker;
 
 		} catch (IOException | ClassNotFoundException err) {
 			logger.severe("Error while trying to get a worker: " + err.getMessage());
 		}
+		
+		return null;
 	}
 
 	public void sendLogs(String message, String context) {
