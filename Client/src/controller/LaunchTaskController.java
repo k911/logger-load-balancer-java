@@ -2,6 +2,8 @@ package controller;
 
 import application.Main;
 import connections.SchedulerConnection;
+import connections.WorkerServerConnection;
+import items.Worker;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -67,8 +69,8 @@ public class LaunchTaskController {
 
 	@FXML
 	public void launchTask() {
-		SchedulerConnection conn = Main.getSchedulerConnection();
-		conn.getWorker();
+		Worker worker = (Worker) Main.getSchedulerConnection().getWorker();
+	    WorkerServerConnection workerServerConnection = new WorkerServerConnection(worker.getHost(), worker.getPort());
 	}
 
 	public static void setCurrTaskChosen(ObservableValue<? extends Toggle> toggleObservableValue) {
